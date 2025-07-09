@@ -1,0 +1,72 @@
+{
+    "checksum": "85eb8992a253b42627a960f13f3f5320fc045c2d19a359ea5b9ee1088ce25cdc",
+    "data": {
+    "id": "f93512ab-b03d-4135-bfcd-cf7ce65428fe",
+    "createdAt": 1750583889134,
+    "updatedAt": 1750583889684,
+    "title": "file:///C:/Users/abhi/AndroidStudioProjects/Glo...",
+    "messages": [
+        {
+            "id": "59222225-5ddd-4a83-8e82-8abb91cddc6d",
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "file:///C:/Users/abhi/AndroidStudioProjects/Gloveapp/app/src/main/java/com/example/gloveapp/auth/AuthModels.kt:5:12"
+                }
+            ],
+            "context": {
+                "currentFile": {
+                    "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                    "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                    "sources": [
+                        "opened_tab"
+                    ],
+                    "content": "package com.example.gloveapp.auth\r\n\r\nimport com.google.firebase.firestore.PropertyName\r\n\r\ndata class AppUser(\r\n    @PropertyName(\"uid\") val uid: String = \"\",\r\n    @PropertyName(\"email\") val email: String = \"\",\r\n    @PropertyName(\"role\") val role: String = \"\",\r\n    @PropertyName(\"doctorUsername\") val doctorUsername: String? = null,\r\n    @PropertyName(\"isApproved\") val isApproved: Boolean = false,\r\n    @PropertyName(\"name\") val name: String? = null\r\n)\r\n\r\ndata class PatientRequest(\r\n    val patientUid: String = \"\",\r\n    val doctorUsername: String = \"\",\r\n    val status: String = \"pending\"\r\n)\r\n\r\ndata class Session(\r\n    val id: String = \"\",\r\n    val timestamp: String = \"\",\r\n    val graspData: List<Float> = emptyList(),\r\n    val releaseData: List<Float> = emptyList(),\r\n    val duration: Long = 0L\r\n)\r\n\r\n\r\nobject FirestoreCollections {\r\n    const val USERS = \"users\"\r\n    const val PATIENT_REQUESTS = \"patient_requests\"\r\n}\r\n"
+                },
+                "codebaseEnabled": true
+            },
+            "createdAt": 1750583889135,
+            "isInternal": false,
+            "rawContent": {
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "file:///C:/Users/abhi/AndroidStudioProjects/Gloveapp/app/src/main/java/com/example/gloveapp/auth/AuthModels.kt:5:12"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "7c664789-3b9f-42d9-a009-edb749ff7655",
+            "role": "system",
+            "content": [
+                {
+                    "type": "errorText",
+                    "text": "Rate limit exceeded. You can try again on June 23 at 03:49.",
+                    "allowRegenerate": true,
+                    "actions": [
+                        {
+                            "type": "upgradePlan",
+                            "waitSeconds": 46872
+                        }
+                    ]
+                }
+            ],
+            "createdAt": 1750583889684,
+            "isInternal": false
+        }
+    ],
+    "isAgent": true,
+    "isCustomAgent": false,
+    "isUnitTestsAgent": false,
+    "isE2EAgent": false,
+    "autoApply": false
+}
+}

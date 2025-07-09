@@ -1,0 +1,1065 @@
+{
+    "checksum": "87bdbe87a814a82311aefc05a91b7cd6b5f68d215da26a8c52a6dcde56909b7b",
+    "data": {
+    "id": "fa9e2edf-3f89-409e-99b4-0c5121d4d5c7",
+    "createdAt": 1750583899993,
+    "updatedAt": 1750583962476,
+    "title": "Kotlin Auth Models Overview",
+    "messages": [
+        {
+            "id": "166a7e44-63bd-4f32-a55e-a9f3360f8811",
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "file:///C:/Users/abhi/AndroidStudioProjects/Gloveapp/app/src/main/java/com/example/gloveapp/auth/AuthModels.kt:5:12"
+                }
+            ],
+            "context": {
+                "currentFile": {
+                    "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                    "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                    "sources": [
+                        "opened_tab"
+                    ],
+                    "content": "package com.example.gloveapp.auth\r\n\r\nimport com.google.firebase.firestore.PropertyName\r\n\r\ndata class AppUser(\r\n    @PropertyName(\"uid\") val uid: String = \"\",\r\n    @PropertyName(\"email\") val email: String = \"\",\r\n    @PropertyName(\"role\") val role: String = \"\",\r\n    @PropertyName(\"doctorUsername\") val doctorUsername: String? = null,\r\n    @PropertyName(\"isApproved\") val isApproved: Boolean = false,\r\n    @PropertyName(\"name\") val name: String? = null\r\n)\r\n\r\ndata class PatientRequest(\r\n    val patientUid: String = \"\",\r\n    val doctorUsername: String = \"\",\r\n    val status: String = \"pending\"\r\n)\r\n\r\ndata class Session(\r\n    val id: String = \"\",\r\n    val timestamp: String = \"\",\r\n    val graspData: List<Float> = emptyList(),\r\n    val releaseData: List<Float> = emptyList(),\r\n    val duration: Long = 0L\r\n)\r\n\r\n\r\nobject FirestoreCollections {\r\n    const val USERS = \"users\"\r\n    const val PATIENT_REQUESTS = \"patient_requests\"\r\n}\r\n"
+                },
+                "codebaseEnabled": true,
+                "ragFiles": [
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ScannedDeviceInfo.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ScannedDeviceInfo.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/PatientInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/DoctorInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\DoctorInterface.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/MainActivity.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\MainActivity.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\PatientApi.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientApi.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\values\\strings.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\values\\strings.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\values\\themes.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\values\\themes.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\google-services.json",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\google-services.json",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\AndroidManifest.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\AndroidManifest.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\drawable\\ic_launcher_foreground.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\drawable\\ic_launcher_foreground.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/MainActivity.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\MainActivity.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ScannedDeviceInfo.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ScannedDeviceInfo.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/UserManualScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\UserManualScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/AppScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Theme.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Theme.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\build.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Color.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Color.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Type.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Type.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\build.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/PatientInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/DoctorInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\DoctorInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/google-services.json",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\google-services.json",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    }
+                ],
+                "rerankedFiles": [
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "fsPath": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt"
+                    }
+                ],
+                "usedFilePaths": [
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "opened_tab"
+                        ],
+                        "content": "package com.example.gloveapp.auth\r\n\r\nimport com.google.firebase.firestore.PropertyName\r\n\r\ndata class AppUser(\r\n    @PropertyName(\"uid\") val uid: String = \"\",\r\n    @PropertyName(\"email\") val email: String = \"\",\r\n    @PropertyName(\"role\") val role: String = \"\",\r\n    @PropertyName(\"doctorUsername\") val doctorUsername: String? = null,\r\n    @PropertyName(\"isApproved\") val isApproved: Boolean = false,\r\n    @PropertyName(\"name\") val name: String? = null\r\n)\r\n\r\ndata class PatientRequest(\r\n    val patientUid: String = \"\",\r\n    val doctorUsername: String = \"\",\r\n    val status: String = \"pending\"\r\n)\r\n\r\ndata class Session(\r\n    val id: String = \"\",\r\n    val timestamp: String = \"\",\r\n    val graspData: List<Float> = emptyList(),\r\n    val releaseData: List<Float> = emptyList(),\r\n    val duration: Long = 0L\r\n)\r\n\r\n\r\nobject FirestoreCollections {\r\n    const val USERS = \"users\"\r\n    const val PATIENT_REQUESTS = \"patient_requests\"\r\n}\r\n"
+                    }
+                ]
+            },
+            "createdAt": 1750583899994,
+            "isInternal": false,
+            "rawContent": {
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "file:///C:/Users/abhi/AndroidStudioProjects/Gloveapp/app/src/main/java/com/example/gloveapp/auth/AuthModels.kt:5:12"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "21e6aca6-1979-4cde-80d4-f72bda7462dc",
+            "role": "assistant",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "The provided Kotlin file `AuthModels.kt` defines several data classes and an enum class used in the `Gloveapp` project. Here's a breakdown of the components:\n\n1. **Data Classes**:\n   - `AppUser`: Represents a user with properties such as `uid`, `email`, `role`, `doctorUsername`, `isApproved`, and `name`. The `@PropertyName` annotation is used to map these properties to specific field names in a Firebase Firestore database.\n   - `PatientRequest`: Represents a request from a patient with properties `patientUid`, `doctorUsername`, and `status`, which defaults to \"pending\".\n   - `Session`: Represents a session with properties `id`, `timestamp`, `graspData`, `releaseData`, and `duration`.\n\n2. **Enum Class**:\n   - `UserRole`: Defines user roles as `ADMIN`, `DOCTOR`, and `PATIENT`.\n\n3. **Object**:\n   - `FirestoreCollections`: Contains constants for Firestore collection names, `USERS` and `PATIENT_REQUESTS`.\n\nIf you have any specific questions or need further assistance with this code, feel free to ask!"
+                }
+            ],
+            "context": {
+                "currentFile": {
+                    "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                    "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                    "sources": [
+                        "opened_tab"
+                    ],
+                    "content": "package com.example.gloveapp.auth\r\n\r\nimport com.google.firebase.firestore.PropertyName\r\n\r\ndata class AppUser(\r\n    @PropertyName(\"uid\") val uid: String = \"\",\r\n    @PropertyName(\"email\") val email: String = \"\",\r\n    @PropertyName(\"role\") val role: String = \"\",\r\n    @PropertyName(\"doctorUsername\") val doctorUsername: String? = null,\r\n    @PropertyName(\"isApproved\") val isApproved: Boolean = false,\r\n    @PropertyName(\"name\") val name: String? = null\r\n)\r\n\r\ndata class PatientRequest(\r\n    val patientUid: String = \"\",\r\n    val doctorUsername: String = \"\",\r\n    val status: String = \"pending\"\r\n)\r\n\r\ndata class Session(\r\n    val id: String = \"\",\r\n    val timestamp: String = \"\",\r\n    val graspData: List<Float> = emptyList(),\r\n    val releaseData: List<Float> = emptyList(),\r\n    val duration: Long = 0L\r\n)\r\n\r\n\r\nobject FirestoreCollections {\r\n    const val USERS = \"users\"\r\n    const val PATIENT_REQUESTS = \"patient_requests\"\r\n}\r\n"
+                },
+                "codebaseEnabled": true,
+                "ragFiles": [
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ScannedDeviceInfo.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ScannedDeviceInfo.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/PatientInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/DoctorInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\DoctorInterface.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/MainActivity.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\MainActivity.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\PatientApi.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientApi.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\values\\strings.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\values\\strings.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\values\\themes.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\values\\themes.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\google-services.json",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\google-services.json",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\AndroidManifest.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\AndroidManifest.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\drawable\\ic_launcher_foreground.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\drawable\\ic_launcher_foreground.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/MainActivity.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\MainActivity.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ScannedDeviceInfo.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ScannedDeviceInfo.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/UserManualScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\UserManualScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/AppScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Theme.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Theme.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\build.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Color.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Color.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Type.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Type.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\build.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/PatientInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/DoctorInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\DoctorInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/google-services.json",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\google-services.json",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    }
+                ],
+                "rerankedFiles": [
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "fsPath": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt"
+                    }
+                ],
+                "usedFilePaths": [
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "opened_tab"
+                        ],
+                        "content": "package com.example.gloveapp.auth\r\n\r\nimport com.google.firebase.firestore.PropertyName\r\n\r\ndata class AppUser(\r\n    @PropertyName(\"uid\") val uid: String = \"\",\r\n    @PropertyName(\"email\") val email: String = \"\",\r\n    @PropertyName(\"role\") val role: String = \"\",\r\n    @PropertyName(\"doctorUsername\") val doctorUsername: String? = null,\r\n    @PropertyName(\"isApproved\") val isApproved: Boolean = false,\r\n    @PropertyName(\"name\") val name: String? = null\r\n)\r\n\r\ndata class PatientRequest(\r\n    val patientUid: String = \"\",\r\n    val doctorUsername: String = \"\",\r\n    val status: String = \"pending\"\r\n)\r\n\r\ndata class Session(\r\n    val id: String = \"\",\r\n    val timestamp: String = \"\",\r\n    val graspData: List<Float> = emptyList(),\r\n    val releaseData: List<Float> = emptyList(),\r\n    val duration: Long = 0L\r\n)\r\n\r\n\r\nobject FirestoreCollections {\r\n    const val USERS = \"users\"\r\n    const val PATIENT_REQUESTS = \"patient_requests\"\r\n}\r\n"
+                    }
+                ]
+            },
+            "createdAt": 1750583906343,
+            "isInternal": false
+        },
+        {
+            "id": "b7df7950-50c7-4f7b-bad3-a3bba0b63973",
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "I'm getting the following error while building my project. The error is: Redeclaration: data class AppUser : Any$ ./gradlew :app:compileDebugKotlin"
+                },
+                {
+                    "type": "text",
+                    "text": "e: file:///C:/Users/abhi/AndroidStudioProjects/Gloveapp/app/src/main/java/com/example/gloveapp/auth/AuthModels.kt:5:12 Redeclaration:"
+                },
+                {
+                    "type": "text",
+                    "text": "data class AppUser : AnyHow do I fix this?"
+                }
+            ],
+            "context": {
+                "currentFile": {
+                    "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                    "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                    "sources": [
+                        "opened_tab"
+                    ],
+                    "content": "package com.example.gloveapp.auth\r\n\r\nimport com.google.firebase.firestore.PropertyName\r\n\r\ndata class AppUser(\r\n    @PropertyName(\"uid\") val uid: String = \"\",\r\n    @PropertyName(\"email\") val email: String = \"\",\r\n    @PropertyName(\"role\") val role: String = \"\",\r\n    @PropertyName(\"doctorUsername\") val doctorUsername: String? = null,\r\n    @PropertyName(\"isApproved\") val isApproved: Boolean = false,\r\n    @PropertyName(\"name\") val name: String? = null\r\n)\r\n\r\ndata class PatientRequest(\r\n    val patientUid: String = \"\",\r\n    val doctorUsername: String = \"\",\r\n    val status: String = \"pending\"\r\n)\r\n\r\ndata class Session(\r\n    val id: String = \"\",\r\n    val timestamp: String = \"\",\r\n    val graspData: List<Float> = emptyList(),\r\n    val releaseData: List<Float> = emptyList(),\r\n    val duration: Long = 0L\r\n)\r\n\r\n\r\nobject FirestoreCollections {\r\n    const val USERS = \"users\"\r\n    const val PATIENT_REQUESTS = \"patient_requests\"\r\n}\r\n"
+                },
+                "codebaseEnabled": true,
+                "ragFiles": [
+                    {
+                        "path": "build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\build.gradle.kts",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ScannedDeviceInfo.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ScannedDeviceInfo.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/PatientInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/MainActivity.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\MainActivity.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/DoctorInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\DoctorInterface.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\build.gradle.kts",
+                        "sources": []
+                    },
+                    {
+                        "path": "settings.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\settings.gradle.kts",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "local.properties",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\local.properties",
+                        "sources": []
+                    },
+                    {
+                        "path": "gradle.properties",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\gradle.properties",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\values\\strings.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\values\\strings.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": ".gitignore",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\.gitignore",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\values\\themes.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\values\\themes.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/MainActivity.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\MainActivity.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ScannedDeviceInfo.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ScannedDeviceInfo.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/UserManualScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\UserManualScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/AppScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Theme.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Theme.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\build.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Color.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Color.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Type.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Type.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\build.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/PatientInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/DoctorInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\DoctorInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/google-services.json",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\google-services.json",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    }
+                ],
+                "rerankedFiles": [
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "fsPath": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt"
+                    }
+                ],
+                "usedFilePaths": [
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "opened_tab"
+                        ],
+                        "content": "package com.example.gloveapp.auth\r\n\r\nimport com.google.firebase.firestore.PropertyName\r\n\r\ndata class AppUser(\r\n    @PropertyName(\"uid\") val uid: String = \"\",\r\n    @PropertyName(\"email\") val email: String = \"\",\r\n    @PropertyName(\"role\") val role: String = \"\",\r\n    @PropertyName(\"doctorUsername\") val doctorUsername: String? = null,\r\n    @PropertyName(\"isApproved\") val isApproved: Boolean = false,\r\n    @PropertyName(\"name\") val name: String? = null\r\n)\r\n\r\ndata class PatientRequest(\r\n    val patientUid: String = \"\",\r\n    val doctorUsername: String = \"\",\r\n    val status: String = \"pending\"\r\n)\r\n\r\ndata class Session(\r\n    val id: String = \"\",\r\n    val timestamp: String = \"\",\r\n    val graspData: List<Float> = emptyList(),\r\n    val releaseData: List<Float> = emptyList(),\r\n    val duration: Long = 0L\r\n)\r\n\r\n\r\nobject FirestoreCollections {\r\n    const val USERS = \"users\"\r\n    const val PATIENT_REQUESTS = \"patient_requests\"\r\n}\r\n"
+                    }
+                ]
+            },
+            "createdAt": 1750583952675,
+            "isInternal": false,
+            "rawContent": {
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "I'm getting the following error while building my project. The error is: Redeclaration: data class AppUser : Any$ ./gradlew :app:compileDebugKotlin"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "e: file:///C:/Users/abhi/AndroidStudioProjects/Gloveapp/app/src/main/java/com/example/gloveapp/auth/AuthModels.kt:5:12 Redeclaration:"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "data class AppUser : AnyHow do I fix this?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "9e5ade24-680c-438d-a080-61909b2aebdf",
+            "role": "assistant",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "The error message you're encountering, \"Redeclaration: data class AppUser : Any,\" suggests that there is a duplicate declaration of the `AppUser` data class in your project. This typically happens when the same class is defined more than once in the same package or module.\n\nHere are some steps to resolve this issue:\n\n1. **Check for Duplicate Declarations**:\n   - Ensure that there is no other file in your project that declares a class named `AppUser`. You can do this by searching your entire project for `class AppUser`.\n\n2. **Check for Compilation Artifacts**:\n   - Sometimes, old compilation artifacts can cause such issues. Try cleaning your project and rebuilding it:\n     ```bash\n     ./gradlew clean\n     ./gradlew build\n     ```\n\n3. **Check for Import Conflicts**:\n   - Ensure that there are no import conflicts or incorrect imports in your files that might be causing this issue.\n\n4. **Check for IDE Issues**:\n   - Sometimes, IDEs like Android Studio might have indexing issues. Try invalidating caches and restarting the IDE:\n     - Go to `File` -> `Invalidate Caches / Restart...` -> `Invalidate and Restart`.\n\n5. **Check for External Libraries**:\n   - If you are using any external libraries or modules, ensure that they do not contain a class with the same name that might be causing a conflict.\n\nIf you've checked all these and the issue persists, please let me know, and we can explore further options."
+                }
+            ],
+            "context": {
+                "currentFile": {
+                    "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                    "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                    "sources": [
+                        "opened_tab"
+                    ],
+                    "content": "package com.example.gloveapp.auth\r\n\r\nimport com.google.firebase.firestore.PropertyName\r\n\r\ndata class AppUser(\r\n    @PropertyName(\"uid\") val uid: String = \"\",\r\n    @PropertyName(\"email\") val email: String = \"\",\r\n    @PropertyName(\"role\") val role: String = \"\",\r\n    @PropertyName(\"doctorUsername\") val doctorUsername: String? = null,\r\n    @PropertyName(\"isApproved\") val isApproved: Boolean = false,\r\n    @PropertyName(\"name\") val name: String? = null\r\n)\r\n\r\ndata class PatientRequest(\r\n    val patientUid: String = \"\",\r\n    val doctorUsername: String = \"\",\r\n    val status: String = \"pending\"\r\n)\r\n\r\ndata class Session(\r\n    val id: String = \"\",\r\n    val timestamp: String = \"\",\r\n    val graspData: List<Float> = emptyList(),\r\n    val releaseData: List<Float> = emptyList(),\r\n    val duration: Long = 0L\r\n)\r\n\r\n\r\nobject FirestoreCollections {\r\n    const val USERS = \"users\"\r\n    const val PATIENT_REQUESTS = \"patient_requests\"\r\n}\r\n"
+                },
+                "codebaseEnabled": true,
+                "ragFiles": [
+                    {
+                        "path": "build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\build.gradle.kts",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ScannedDeviceInfo.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ScannedDeviceInfo.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/PatientInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/MainActivity.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\MainActivity.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/DoctorInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\DoctorInterface.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\build.gradle.kts",
+                        "sources": []
+                    },
+                    {
+                        "path": "settings.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\settings.gradle.kts",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "local.properties",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\local.properties",
+                        "sources": []
+                    },
+                    {
+                        "path": "gradle.properties",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\gradle.properties",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\values\\strings.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\values\\strings.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": ".gitignore",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\.gitignore",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\values\\themes.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\values\\themes.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/MainActivity.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\MainActivity.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ScannedDeviceInfo.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ScannedDeviceInfo.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/UserManualScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\UserManualScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/AppScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Theme.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Theme.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\build.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Color.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Color.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Type.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Type.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\build.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/PatientInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/DoctorInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\DoctorInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/google-services.json",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\google-services.json",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    }
+                ],
+                "rerankedFiles": [
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "fsPath": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt"
+                    }
+                ],
+                "usedFilePaths": [
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "opened_tab"
+                        ],
+                        "content": "package com.example.gloveapp.auth\r\n\r\nimport com.google.firebase.firestore.PropertyName\r\n\r\ndata class AppUser(\r\n    @PropertyName(\"uid\") val uid: String = \"\",\r\n    @PropertyName(\"email\") val email: String = \"\",\r\n    @PropertyName(\"role\") val role: String = \"\",\r\n    @PropertyName(\"doctorUsername\") val doctorUsername: String? = null,\r\n    @PropertyName(\"isApproved\") val isApproved: Boolean = false,\r\n    @PropertyName(\"name\") val name: String? = null\r\n)\r\n\r\ndata class PatientRequest(\r\n    val patientUid: String = \"\",\r\n    val doctorUsername: String = \"\",\r\n    val status: String = \"pending\"\r\n)\r\n\r\ndata class Session(\r\n    val id: String = \"\",\r\n    val timestamp: String = \"\",\r\n    val graspData: List<Float> = emptyList(),\r\n    val releaseData: List<Float> = emptyList(),\r\n    val duration: Long = 0L\r\n)\r\n\r\n\r\nobject FirestoreCollections {\r\n    const val USERS = \"users\"\r\n    const val PATIENT_REQUESTS = \"patient_requests\"\r\n}\r\n"
+                    }
+                ]
+            },
+            "createdAt": 1750583962476,
+            "isInternal": false
+        }
+    ],
+    "isAgent": false,
+    "isNameGenerated": true,
+    "isCustomAgent": false,
+    "isUnitTestsAgent": false,
+    "isE2EAgent": false,
+    "autoApply": false
+}
+}

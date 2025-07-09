@@ -1,0 +1,27 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Rule for session CSV files uploaded by the app
+    // Allow unauthenticated uploads for testing with fixed admin login
+    match /sessions/{sessionId} {
+      allow read, write: if true; // Allow unauthenticated access for testing
+    }
+
+    // Rule for generated plots created by Cloud Functions
+    match /session_plots/{sessionId}/{plotName} {
+      allow read: if true; // Publicly readable for app display
+      allow write: if true; // Allow Cloud Function to write without auth for testing
+    }
+
+    // Rule for user-specific data (if needed in future)
+    match /user_data/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Default rule: deny all other access
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

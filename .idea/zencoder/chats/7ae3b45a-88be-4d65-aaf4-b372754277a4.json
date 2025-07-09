@@ -1,0 +1,77 @@
+{
+    "checksum": "0657bccb9e6c009c7682e1507882dc776a323769ac9b08708b37468955e84ac4",
+    "data": {
+    "id": "7ae3b45a-88be-4d65-aaf4-b372754277a4",
+    "createdAt": 1750843808279,
+    "updatedAt": 1750843808893,
+    "title": "Unresolved reference 'di'. Unresolved reference...",
+    "messages": [
+        {
+            "id": "33ee84cb-e3e9-467f-904e-32932e7e5e11",
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Unresolved reference 'di'."
+                },
+                {
+                    "type": "text",
+                    "text": "Unresolved reference 'AppModule'."
+                }
+            ],
+            "context": {
+                "codebaseEnabled": true
+            },
+            "createdAt": 1750843808280,
+            "isInternal": false,
+            "rawContent": {
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "Unresolved reference 'di'."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "Unresolved reference 'AppModule'."
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "0500803a-f0bd-4c2e-910a-feb684cbc6ad",
+            "role": "system",
+            "content": [
+                {
+                    "type": "errorText",
+                    "text": "Rate limit exceeded. You can try again on June 26 at 11:52.",
+                    "allowRegenerate": true,
+                    "actions": [
+                        {
+                            "type": "upgradePlan",
+                            "waitSeconds": 75148
+                        }
+                    ]
+                }
+            ],
+            "createdAt": 1750843808893,
+            "isInternal": false
+        }
+    ],
+    "isAgent": true,
+    "isCustomAgent": false,
+    "isUnitTestsAgent": false,
+    "isE2EAgent": false,
+    "autoApply": false
+}
+}

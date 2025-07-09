@@ -1,0 +1,514 @@
+{
+    "checksum": "a5270cbb7abff06434a91c90d85f1a2d7b6f2deb515bbf25139c89ef1eef7767",
+    "data": {
+    "id": "eed723fa-dbb4-466f-905e-d46438f12f7d",
+    "createdAt": 1750843836935,
+    "updatedAt": 1750843847701,
+    "title": "Kotlin Unresolved Reference Errors",
+    "messages": [
+        {
+            "id": "44799f90-3829-4163-b0f5-68c9d278f924",
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Unresolved reference 'di'."
+                },
+                {
+                    "type": "text",
+                    "text": "Unresolved reference 'AppModule'."
+                }
+            ],
+            "context": {
+                "currentFile": {
+                    "path": "app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                    "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                    "sources": [
+                        "opened_tab"
+                    ],
+                    "content": "package com.example.gloveapp.ui\r\n\r\nimport android.widget.Toast\r\nimport androidx.compose.animation.*\r\nimport androidx.compose.animation.core.tween\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.layout.*\r\nimport androidx.compose.material.icons.Icons\r\nimport androidx.compose.material.icons.filled.*\r\nimport androidx.compose.material.icons.rounded.NightlightRound\r\nimport androidx.compose.material.icons.rounded.WbSunny\r\nimport androidx.compose.material3.*\r\nimport androidx.compose.runtime.*\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.platform.LocalContext\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.text.style.TextAlign\r\nimport androidx.compose.ui.unit.dp\r\nimport com.example.gloveapp.AppScreen\r\nimport com.example.gloveapp.GetReadyScreen\r\nimport com.example.gloveapp.ScanScreen\r\nimport com.example.gloveapp.ScannedDeviceInfo\r\nimport com.example.gloveapp.TimerDisplay\r\nimport com.example.gloveapp.auth.AuthViewModel\r\nimport com.example.gloveapp.ui.theme.GloveAppTheme\r\nimport com.github.mikephil.charting.data.Entry\r\nimport kotlinx.coroutines.delay\r\nimport java.text.SimpleDateFormat\r\nimport java.util.*\r\n\r\n@Composable\r\nfun PatientInterface(\r\n    onToggleTheme: () -> Unit,\r\n    isDarkTheme: Boolean,\r\n    fsrEntries: List<List<Entry>>,\r\n    flexEntries: List<List<Entry>>,\r\n    authViewModel: AuthViewModel,\r\n    onScanClick: () -> Unit,\r\n    isScanning: Boolean,\r\n    scannedDevices: List<ScannedDeviceInfo>,\r\n    rssiMap: Map<String, Int>,\r\n    connectToDevice: (ScannedDeviceInfo) -> Unit,\r\n    stopScan: () -> Unit,\r\n    writeDataControl: (Boolean) -> Unit,\r\n    disconnectGatt: () -> Unit,\r\n    clearData: () -> Unit,\r\n    isDataStreamingEnabled: Boolean,\r\n    isDeviceReadyForControl: Boolean,\r\n    isTimerRunning: Boolean,\r\n    timerStartTimeMillis: Long,\r\n    timerAccumulatedMillis: Long\r\n) {\r\n    var currentScreen by remember { mutableStateOf(AppScreen.SCAN) }\r\n    var scanInitiatedState by remember { mutableStateOf(false) }\r\n    var isLoadingPermissions by remember { mutableStateOf(false) }\r\n    val context = LocalContext.current\r\n\r\n    GloveAppTheme(darkTheme = isDarkTheme) {\r\n        Crossfade(\r\n            targetState = currentScreen,\r\n            animationSpec = tween(durationMillis = 500)\r\n        ) { targetScreen ->\r\n            when (targetScreen) {\r\n                AppScreen.SCAN -> ScanScreen(\r\n                    devices = scannedDevices,\r\n                    rssiValues = rssiMap,\r\n                    isScanning = isScanning,\r\n                    onScanClick = {\r\n                        scanInitiatedState = true\r\n                        isLoadingPermissions = true\r\n                        onScanClick()\r\n                    },\r\n                    onDeviceClick = { device ->\r\n                        connectToDevice(device)\r\n                        stopScan()\r\n                        currentScreen = AppScreen.GET_READY\r\n                    },\r\n                    scanInitiated = scanInitiatedState,\r\n                    isLoadingPermissions = isLoadingPermissions,\r\n                    isDarkTheme = isDarkTheme,\r\n                    onToggleTheme = onToggleTheme\r\n                )\r\n                AppScreen.GET_READY -> GetReadyScreen(\r\n                    onCountdownComplete = {\r\n                        try {\r\n                            writeDataControl(true)\r\n                            currentScreen = AppScreen.MAIN\r\n                        } catch (e: Exception) {\r\n                            Toast.makeText(context, \"Error starting data stream: ${e.message}\", Toast.LENGTH_LONG).show()\r\n                            currentScreen = AppScreen.MAIN\r\n                        }\r\n                    },\r\n                    isDarkTheme = isDarkTheme,\r\n                    onToggleTheme = onToggleTheme\r\n                )\r\n                AppScreen.MAIN -> PatientMainScreen(\r\n                    onScanClick = {\r\n                        try {\r\n                            writeDataControl(false)\r\n                            disconnectGatt()\r\n                            clearData()\r\n                            currentScreen = AppScreen.SCAN\r\n                            scanInitiatedState = false\r\n                        } catch (e: Exception) {\r\n                            Toast.makeText(context, \"Error disconnecting: ${e.message}\", Toast.LENGTH_SHORT).show()\r\n                        }\r\n                    },\r\n                    fsrEntries = fsrEntries,\r\n                    flexEntries = flexEntries,\r\n                    onStartStreaming = { currentScreen = AppScreen.GET_READY },\r\n                    onStopStreaming = {\r\n                        try {\r\n                            writeDataControl(false)\r\n                        } catch (e: Exception) {\r\n                            Toast.makeText(context, \"Error stopping streaming\", Toast.LENGTH_SHORT).show()\r\n                        }\r\n                    },\r\n                    isDarkTheme = isDarkTheme,\r\n                    onToggleTheme = onToggleTheme,\r\n                    isDataStreamingEnabled = isDataStreamingEnabled,\r\n                    isDeviceReadyForControl = isDeviceReadyForControl,\r\n                    isTimerRunning = isTimerRunning,\r\n                    timerStartTimeMillis = timerStartTimeMillis,\r\n                    timerAccumulatedMillis = timerAccumulatedMillis,\r\n                    onViewResult = {\r\n                        val patientUid = authViewModel.currentUser.value?.uid ?: return@PatientMainScreen\r\n                        val sessionData = mapOf(\r\n                            \"timestamp\" to SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss'Z'\", Locale.getDefault()).format(Date()),\r\n                            \"graspData\" to fsrEntries.flatten().map { it.y },\r\n                            \"releaseData\" to flexEntries.flatten().map { it.y },\r\n                            \"duration\" to timerAccumulatedMillis\r\n                        )\r\n                        authViewModel.saveSession(\r\n                            patientUid = patientUid,\r\n                            sessionData = sessionData,\r\n                            onSuccess = {\r\n                                Toast.makeText(context, \"Session saved\", Toast.LENGTH_SHORT).show()\r\n                            },\r\n                            onError = { error ->\r\n                                Toast.makeText(context, \"Error saving session: $error\", Toast.LENGTH_SHORT).show()\r\n                            }\r\n                        )\r\n                    }\r\n                )\r\n                else -> Unit\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@OptIn(ExperimentalMaterial3Api::class)\r\n@Composable\r\nfun PatientMainScreen(\r\n    onScanClick: () -> Unit,\r\n    fsrEntries: List<List<Entry>>,\r\n    flexEntries: List<List<Entry>>,\r\n    onStartStreaming: () -> Unit,\r\n    onStopStreaming: () -> Unit,\r\n    isDarkTheme: Boolean,\r\n    onToggleTheme: () -> Unit,\r\n    isDataStreamingEnabled: Boolean,\r\n    isDeviceReadyForControl: Boolean,\r\n    isTimerRunning: Boolean,\r\n    timerStartTimeMillis: Long,\r\n    timerAccumulatedMillis: Long,\r\n    onViewResult: () -> Unit\r\n) {\r\n    var isGrasp by remember { mutableStateOf(true) }\r\n    var isTimerCompleted by remember { mutableStateOf(false) }\r\n\r\n    LaunchedEffect(isTimerRunning, timerStartTimeMillis, timerAccumulatedMillis) {\r\n        if (isTimerRunning) {\r\n            val startTime = timerStartTimeMillis\r\n            val elapsedSinceStart = System.currentTimeMillis() - startTime + timerAccumulatedMillis\r\n            if (elapsedSinceStart >= 120_000L) {\r\n                onStopStreaming()\r\n                isTimerCompleted = true\r\n            } else {\r\n                isTimerCompleted = false\r\n                delay(120_000L - elapsedSinceStart)\r\n                if (isTimerRunning) {\r\n                    onStopStreaming()\r\n                    isTimerCompleted = true\r\n                }\r\n            }\r\n        } else {\r\n            isTimerCompleted = timerAccumulatedMillis >= 120_000L\r\n        }\r\n    }\r\n\r\n    LaunchedEffect(isDataStreamingEnabled, timerStartTimeMillis) {\r\n        if (isDataStreamingEnabled && isTimerRunning) {\r\n            while (isDataStreamingEnabled) {\r\n                isGrasp = true\r\n                delay(5000L)\r\n                if (!isDataStreamingEnabled) break\r\n                isGrasp = false\r\n                delay(5000L)\r\n            }\r\n        }\r\n    }\r\n\r\n    Scaffold(\r\n        topBar = {\r\n            TopAppBar(\r\n                title = { Text(\"Patient Data\", color = MaterialTheme.colorScheme.onPrimary) },\r\n                navigationIcon = {\r\n                    IconButton(onClick = onScanClick) {\r\n                        Icon(\r\n                            Icons.Default.PowerSettingsNew,\r\n                            contentDescription = \"Disconnect and Scan\",\r\n                            tint = MaterialTheme.colorScheme.onPrimary\r\n                        )\r\n                    }\r\n                },\r\n                actions = {\r\n                    TimerDisplay(\r\n                        isRunning = isTimerRunning,\r\n                        startTimeMillis = timerStartTimeMillis,\r\n                        accumulatedMillis = timerAccumulatedMillis,\r\n                        color = MaterialTheme.colorScheme.onPrimary\r\n                    )\r\n                    Spacer(Modifier.width(8.dp))\r\n                    Row(\r\n                        verticalAlignment = Alignment.CenterVertically,\r\n                        modifier = Modifier.padding(end = 8.dp)\r\n                    ) {\r\n                        Icon(\r\n                            imageVector = if (isDarkTheme) Icons.Rounded.NightlightRound else Icons.Rounded.WbSunny,\r\n                            contentDescription = if (isDarkTheme) \"Dark Mode\" else \"Light Mode\",\r\n                            tint = MaterialTheme.colorScheme.onPrimary\r\n                        )\r\n                        Spacer(Modifier.width(4.dp))\r\n                        Switch(\r\n                            checked = isDarkTheme,\r\n                            onCheckedChange = { onToggleTheme() },\r\n                            colors = SwitchDefaults.colors(\r\n                                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,\r\n                                uncheckedThumbColor = MaterialTheme.colorScheme.onPrimary,\r\n                                checkedTrackColor = MaterialTheme.colorScheme.secondary,\r\n                                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant\r\n                            )\r\n                        )\r\n                    }\r\n                },\r\n                colors = TopAppBarDefaults.mediumTopAppBarColors(\r\n                    containerColor = MaterialTheme.colorScheme.primary,\r\n                    titleContentColor = MaterialTheme.colorScheme.onPrimary\r\n                )\r\n            )\r\n        }\r\n    ) { padding ->\r\n        Column(\r\n            modifier = Modifier\r\n                .fillMaxSize()\r\n                .background(MaterialTheme.colorScheme.background)\r\n                .padding(padding)\r\n                .padding(16.dp),\r\n            verticalArrangement = Arrangement.spacedBy(16.dp)\r\n        ) {\r\n            Button(\r\n                onClick = { if (isDataStreamingEnabled) onStopStreaming() else onStartStreaming() },\r\n                modifier = Modifier\r\n                    .fillMaxWidth()\r\n                    .height(52.dp),\r\n                enabled = isDeviceReadyForControl,\r\n                colors = ButtonDefaults.buttonColors(\r\n                    containerColor = if (isDataStreamingEnabled) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,\r\n                    contentColor = if (isDataStreamingEnabled) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary,\r\n                    disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),\r\n                    disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)\r\n                ),\r\n                shape = MaterialTheme.shapes.medium\r\n            ) {\r\n                Icon(\r\n                    imageVector = if (isDataStreamingEnabled) Icons.Default.Stop else Icons.Default.Bluetooth,\r\n                    contentDescription = null\r\n                )\r\n                Spacer(Modifier.width(8.dp))\r\n                Text(if (isDataStreamingEnabled) \"Stop Data\" else \"Start Data\")\r\n            }\r\n\r\n            AnimatedVisibility(\r\n                visible = isDataStreamingEnabled,\r\n                enter = fadeIn(tween(500)) + scaleIn(tween(500)),\r\n                exit = fadeOut(tween(300)) + scaleOut(tween(300))\r\n            ) {\r\n                GraspReleaseAnimation(isGrasp = isGrasp)\r\n            }\r\n\r\n            AnimatedVisibility(\r\n                visible = isTimerCompleted,\r\n                enter = slideInVertically(tween(500)) { it / 2 } + fadeIn(tween(500)),\r\n                exit = slideOutVertically(tween(300)) { it / 2 } + fadeOut(tween(300))\r\n            ) {\r\n                Card(\r\n                    modifier = Modifier.fillMaxWidth(),\r\n                    shape = MaterialTheme.shapes.medium,\r\n                    elevation = CardDefaults.cardElevation(4.dp),\r\n                    colors = CardDefaults.cardColors(\r\n                        containerColor = MaterialTheme.colorScheme.primaryContainer\r\n                    )\r\n                ) {\r\n                    Column(\r\n                        modifier = Modifier.padding(16.dp),\r\n                        horizontalAlignment = Alignment.CenterHorizontally\r\n                    ) {\r\n                        Text(\r\n                            text = \"Session Complete!\",\r\n                            style = MaterialTheme.typography.titleMedium.copy(\r\n                                color = MaterialTheme.colorScheme.onPrimaryContainer,\r\n                                fontWeight = FontWeight.Bold\r\n                            ),\r\n                            textAlign = TextAlign.Center\r\n                        )\r\n                        Spacer(Modifier.height(8.dp))\r\n                        Text(\r\n                            text = \"2-minute session has finished.\",\r\n                            style = MaterialTheme.typography.bodyMedium.copy(\r\n                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)\r\n                            ),\r\n                            textAlign = TextAlign.Center\r\n                        )\r\n                        Spacer(Modifier.height(16.dp))\r\n                        Button(\r\n                            onClick = onViewResult,\r\n                            modifier = Modifier\r\n                                .fillMaxWidth()\r\n                                .height(52.dp),\r\n                            colors = ButtonDefaults.buttonColors(\r\n                                containerColor = MaterialTheme.colorScheme.primary,\r\n                                contentColor = MaterialTheme.colorScheme.onPrimary\r\n                            ),\r\n                            shape = MaterialTheme.shapes.medium\r\n                        ) {\r\n                            Icon(\r\n                                imageVector = Icons.Default.Timer,\r\n                                contentDescription = null\r\n                            )\r\n                            Spacer(Modifier.width(8.dp))\r\n                            Text(\r\n                                text = \"View Result\",\r\n                                style = MaterialTheme.typography.titleMedium.copy(\r\n                                    fontWeight = FontWeight.Bold\r\n                                )\r\n                            )\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nfun GraspReleaseAnimation(isGrasp: Boolean) {\r\n    Card(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .height(200.dp),\r\n        shape = MaterialTheme.shapes.medium,\r\n        elevation = CardDefaults.cardElevation(4.dp),\r\n        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)\r\n    ) {\r\n        Box(\r\n            modifier = Modifier.fillMaxSize(),\r\n            contentAlignment = Alignment.Center\r\n        ) {\r\n            Crossfade(\r\n                targetState = isGrasp,\r\n                animationSpec = tween(500)\r\n            ) { grasp ->\r\n                Column(\r\n                    horizontalAlignment = Alignment.CenterHorizontally,\r\n                    verticalArrangement = Arrangement.Center\r\n                ) {\r\n                    Icon(\r\n                        imageVector = if (grasp) Icons.Default.PanTool else Icons.Default.Handyman,\r\n                        contentDescription = null,\r\n                        tint = if (grasp) Color(0xFF34A853) else Color(0xFFEA4335),\r\n                        modifier = Modifier.size(80.dp)\r\n                    )\r\n                    Spacer(Modifier.height(8.dp))\r\n                    Text(\r\n                        text = if (grasp) \"Grasp\" else \"Release\",\r\n                        style = MaterialTheme.typography.headlineMedium,\r\n                        color = if (grasp) Color(0xFF34A853) else Color(0xFFEA4335),\r\n                        fontWeight = FontWeight.Bold\r\n                    )\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n"
+                },
+                "codebaseEnabled": true,
+                "ragFiles": [
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/GloveApplication.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\di\\AppModule.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\di\\AppModule.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\bluetooth\\BluetoothService.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\bluetooth\\BluetoothService.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\navigation\\AuthNavigation.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\navigation\\AuthNavigation.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\ui\\auth\\AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\auth\\AuthScreen.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": ".zencoder\\.gitignore",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\.zencoder\\.gitignore",
+                        "sources": []
+                    },
+                    {
+                        "path": "gradle\\libs.versions.toml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\gradle\\libs.versions.toml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\.gitignore",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\.gitignore",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\values\\strings.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\values\\strings.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\drawable\\ic_notification.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\drawable\\ic_notification.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/MainActivity.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\MainActivity.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/PatientRequest.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\PatientRequest.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\build.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Theme.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Theme.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/AppScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/PatientInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/DoctorInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\DoctorInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/UserManual.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\UserManual.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ScannedDevicesInfo.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ScannedDevicesInfo.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "settings.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\settings.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\build.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Type.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Type.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/GloveApplication.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/build/generated/res/processDebugGoogleServices/values/values.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\build\\generated\\res\\processDebugGoogleServices\\values\\values.xml",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/MessagingService.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\MessagingService.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/res/drawable/ic_notification_icon.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\drawable\\ic_notification_icon.xml",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    }
+                ],
+                "rerankedFiles": [
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt",
+                        "fsPath": "app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt"
+                    }
+                ],
+                "usedFilePaths": [
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ],
+                        "content": "package com.example.gloveapp.ui\r\n\r\nimport android.widget.Toast\r\nimport androidx.compose.animation.*\r\nimport androidx.compose.animation.core.tween\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.layout.*\r\nimport androidx.compose.material.icons.Icons\r\nimport androidx.compose.material.icons.filled.*\r\nimport androidx.compose.material.icons.rounded.NightlightRound\r\nimport androidx.compose.material.icons.rounded.WbSunny\r\nimport androidx.compose.material3.*\r\nimport androidx.compose.runtime.*\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.platform.LocalContext\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.text.style.TextAlign\r\nimport androidx.compose.ui.unit.dp\r\nimport com.example.gloveapp.AppScreen\r\nimport com.example.gloveapp.GetReadyScreen\r\nimport com.example.gloveapp.ScanScreen\r\nimport com.example.gloveapp.ScannedDeviceInfo\r\nimport com.example.gloveapp.TimerDisplay\r\nimport com.example.gloveapp.auth.AuthViewModel\r\nimport com.example.gloveapp.ui.theme.GloveAppTheme\r\nimport com.github.mikephil.charting.data.Entry\r\nimport kotlinx.coroutines.delay\r\nimport java.text.SimpleDateFormat\r\nimport java.util.*\r\n\r\n@Composable\r\nfun PatientInterface(\r\n    onToggleTheme: () -> Unit,\r\n    isDarkTheme: Boolean,\r\n    fsrEntries: List<List<Entry>>,\r\n    flexEntries: List<List<Entry>>,\r\n    authViewModel: AuthViewModel,\r\n    onScanClick: () -> Unit,\r\n    isScanning: Boolean,\r\n    scannedDevices: List<ScannedDeviceInfo>,\r\n    rssiMap: Map<String, Int>,\r\n    connectToDevice: (ScannedDeviceInfo) -> Unit,\r\n    stopScan: () -> Unit,\r\n    writeDataControl: (Boolean) -> Unit,\r\n    disconnectGatt: () -> Unit,\r\n    clearData: () -> Unit,\r\n    isDataStreamingEnabled: Boolean,\r\n    isDeviceReadyForControl: Boolean,\r\n    isTimerRunning: Boolean,\r\n    timerStartTimeMillis: Long,\r\n    timerAccumulatedMillis: Long\r\n) {\r\n    var currentScreen by remember { mutableStateOf(AppScreen.SCAN) }\r\n    var scanInitiatedState by remember { mutableStateOf(false) }\r\n    var isLoadingPermissions by remember { mutableStateOf(false) }\r\n    val context = LocalContext.current\r\n\r\n    GloveAppTheme(darkTheme = isDarkTheme) {\r\n        Crossfade(\r\n            targetState = currentScreen,\r\n            animationSpec = tween(durationMillis = 500)\r\n        ) { targetScreen ->\r\n            when (targetScreen) {\r\n                AppScreen.SCAN -> ScanScreen(\r\n                    devices = scannedDevices,\r\n                    rssiValues = rssiMap,\r\n                    isScanning = isScanning,\r\n                    onScanClick = {\r\n                        scanInitiatedState = true\r\n                        isLoadingPermissions = true\r\n                        onScanClick()\r\n                    },\r\n                    onDeviceClick = { device ->\r\n                        connectToDevice(device)\r\n                        stopScan()\r\n                        currentScreen = AppScreen.GET_READY\r\n                    },\r\n                    scanInitiated = scanInitiatedState,\r\n                    isLoadingPermissions = isLoadingPermissions,\r\n                    isDarkTheme = isDarkTheme,\r\n                    onToggleTheme = onToggleTheme\r\n                )\r\n                AppScreen.GET_READY -> GetReadyScreen(\r\n                    onCountdownComplete = {\r\n                        try {\r\n                            writeDataControl(true)\r\n                            currentScreen = AppScreen.MAIN\r\n                        } catch (e: Exception) {\r\n                            Toast.makeText(context, \"Error starting data stream: ${e.message}\", Toast.LENGTH_LONG).show()\r\n                            currentScreen = AppScreen.MAIN\r\n                        }\r\n                    },\r\n                    isDarkTheme = isDarkTheme,\r\n                    onToggleTheme = onToggleTheme\r\n                )\r\n                AppScreen.MAIN -> PatientMainScreen(\r\n                    onScanClick = {\r\n                        try {\r\n                            writeDataControl(false)\r\n                            disconnectGatt()\r\n                            clearData()\r\n                            currentScreen = AppScreen.SCAN\r\n                            scanInitiatedState = false\r\n                        } catch (e: Exception) {\r\n                            Toast.makeText(context, \"Error disconnecting: ${e.message}\", Toast.LENGTH_SHORT).show()\r\n                        }\r\n                    },\r\n                    fsrEntries = fsrEntries,\r\n                    flexEntries = flexEntries,\r\n                    onStartStreaming = { currentScreen = AppScreen.GET_READY },\r\n                    onStopStreaming = {\r\n                        try {\r\n                            writeDataControl(false)\r\n                        } catch (e: Exception) {\r\n                            Toast.makeText(context, \"Error stopping streaming\", Toast.LENGTH_SHORT).show()\r\n                        }\r\n                    },\r\n                    isDarkTheme = isDarkTheme,\r\n                    onToggleTheme = onToggleTheme,\r\n                    isDataStreamingEnabled = isDataStreamingEnabled,\r\n                    isDeviceReadyForControl = isDeviceReadyForControl,\r\n                    isTimerRunning = isTimerRunning,\r\n                    timerStartTimeMillis = timerStartTimeMillis,\r\n                    timerAccumulatedMillis = timerAccumulatedMillis,\r\n                    onViewResult = {\r\n                        val patientUid = authViewModel.currentUser.value?.uid ?: return@PatientMainScreen\r\n                        val sessionData = mapOf(\r\n                            \"timestamp\" to SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss'Z'\", Locale.getDefault()).format(Date()),\r\n                            \"graspData\" to fsrEntries.flatten().map { it.y },\r\n                            \"releaseData\" to flexEntries.flatten().map { it.y },\r\n                            \"duration\" to timerAccumulatedMillis\r\n                        )\r\n                        authViewModel.saveSession(\r\n                            patientUid = patientUid,\r\n                            sessionData = sessionData,\r\n                            onSuccess = {\r\n                                Toast.makeText(context, \"Session saved\", Toast.LENGTH_SHORT).show()\r\n                            },\r\n                            onError = { error ->\r\n                                Toast.makeText(context, \"Error saving session: $error\", Toast.LENGTH_SHORT).show()\r\n                            }\r\n                        )\r\n                    }\r\n                )\r\n                else -> Unit\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@OptIn(ExperimentalMaterial3Api::class)\r\n@Composable\r\nfun PatientMainScreen(\r\n    onScanClick: () -> Unit,\r\n    fsrEntries: List<List<Entry>>,\r\n    flexEntries: List<List<Entry>>,\r\n    onStartStreaming: () -> Unit,\r\n    onStopStreaming: () -> Unit,\r\n    isDarkTheme: Boolean,\r\n    onToggleTheme: () -> Unit,\r\n    isDataStreamingEnabled: Boolean,\r\n    isDeviceReadyForControl: Boolean,\r\n    isTimerRunning: Boolean,\r\n    timerStartTimeMillis: Long,\r\n    timerAccumulatedMillis: Long,\r\n    onViewResult: () -> Unit\r\n) {\r\n    var isGrasp by remember { mutableStateOf(true) }\r\n    var isTimerCompleted by remember { mutableStateOf(false) }\r\n\r\n    LaunchedEffect(isTimerRunning, timerStartTimeMillis, timerAccumulatedMillis) {\r\n        if (isTimerRunning) {\r\n            val startTime = timerStartTimeMillis\r\n            val elapsedSinceStart = System.currentTimeMillis() - startTime + timerAccumulatedMillis\r\n            if (elapsedSinceStart >= 120_000L) {\r\n                onStopStreaming()\r\n                isTimerCompleted = true\r\n            } else {\r\n                isTimerCompleted = false\r\n                delay(120_000L - elapsedSinceStart)\r\n                if (isTimerRunning) {\r\n                    onStopStreaming()\r\n                    isTimerCompleted = true\r\n                }\r\n            }\r\n        } else {\r\n            isTimerCompleted = timerAccumulatedMillis >= 120_000L\r\n        }\r\n    }\r\n\r\n    LaunchedEffect(isDataStreamingEnabled, timerStartTimeMillis) {\r\n        if (isDataStreamingEnabled && isTimerRunning) {\r\n            while (isDataStreamingEnabled) {\r\n                isGrasp = true\r\n                delay(5000L)\r\n                if (!isDataStreamingEnabled) break\r\n                isGrasp = false\r\n                delay(5000L)\r\n            }\r\n        }\r\n    }\r\n\r\n    Scaffold(\r\n        topBar = {\r\n            TopAppBar(\r\n                title = { Text(\"Patient Data\", color = MaterialTheme.colorScheme.onPrimary) },\r\n                navigationIcon = {\r\n                    IconButton(onClick = onScanClick) {\r\n                        Icon(\r\n                            Icons.Default.PowerSettingsNew,\r\n                            contentDescription = \"Disconnect and Scan\",\r\n                            tint = MaterialTheme.colorScheme.onPrimary\r\n                        )\r\n                    }\r\n                },\r\n                actions = {\r\n                    TimerDisplay(\r\n                        isRunning = isTimerRunning,\r\n                        startTimeMillis = timerStartTimeMillis,\r\n                        accumulatedMillis = timerAccumulatedMillis,\r\n                        color = MaterialTheme.colorScheme.onPrimary\r\n                    )\r\n                    Spacer(Modifier.width(8.dp))\r\n                    Row(\r\n                        verticalAlignment = Alignment.CenterVertically,\r\n                        modifier = Modifier.padding(end = 8.dp)\r\n                    ) {\r\n                        Icon(\r\n                            imageVector = if (isDarkTheme) Icons.Rounded.NightlightRound else Icons.Rounded.WbSunny,\r\n                            contentDescription = if (isDarkTheme) \"Dark Mode\" else \"Light Mode\",\r\n                            tint = MaterialTheme.colorScheme.onPrimary\r\n                        )\r\n                        Spacer(Modifier.width(4.dp))\r\n                        Switch(\r\n                            checked = isDarkTheme,\r\n                            onCheckedChange = { onToggleTheme() },\r\n                            colors = SwitchDefaults.colors(\r\n                                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,\r\n                                uncheckedThumbColor = MaterialTheme.colorScheme.onPrimary,\r\n                                checkedTrackColor = MaterialTheme.colorScheme.secondary,\r\n                                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant\r\n                            )\r\n                        )\r\n                    }\r\n                },\r\n                colors = TopAppBarDefaults.mediumTopAppBarColors(\r\n                    containerColor = MaterialTheme.colorScheme.primary,\r\n                    titleContentColor = MaterialTheme.colorScheme.onPrimary\r\n                )\r\n            )\r\n        }\r\n    ) { padding ->\r\n        Column(\r\n            modifier = Modifier\r\n                .fillMaxSize()\r\n                .background(MaterialTheme.colorScheme.background)\r\n                .padding(padding)\r\n                .padding(16.dp),\r\n            verticalArrangement = Arrangement.spacedBy(16.dp)\r\n        ) {\r\n            Button(\r\n                onClick = { if (isDataStreamingEnabled) onStopStreaming() else onStartStreaming() },\r\n                modifier = Modifier\r\n                    .fillMaxWidth()\r\n                    .height(52.dp),\r\n                enabled = isDeviceReadyForControl,\r\n                colors = ButtonDefaults.buttonColors(\r\n                    containerColor = if (isDataStreamingEnabled) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,\r\n                    contentColor = if (isDataStreamingEnabled) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary,\r\n                    disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),\r\n                    disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)\r\n                ),\r\n                shape = MaterialTheme.shapes.medium\r\n            ) {\r\n                Icon(\r\n                    imageVector = if (isDataStreamingEnabled) Icons.Default.Stop else Icons.Default.Bluetooth,\r\n                    contentDescription = null\r\n                )\r\n                Spacer(Modifier.width(8.dp))\r\n                Text(if (isDataStreamingEnabled) \"Stop Data\" else \"Start Data\")\r\n            }\r\n\r\n            AnimatedVisibility(\r\n                visible = isDataStreamingEnabled,\r\n                enter = fadeIn(tween(500)) + scaleIn(tween(500)),\r\n                exit = fadeOut(tween(300)) + scaleOut(tween(300))\r\n            ) {\r\n                GraspReleaseAnimation(isGrasp = isGrasp)\r\n            }\r\n\r\n            AnimatedVisibility(\r\n                visible = isTimerCompleted,\r\n                enter = slideInVertically(tween(500)) { it / 2 } + fadeIn(tween(500)),\r\n                exit = slideOutVertically(tween(300)) { it / 2 } + fadeOut(tween(300))\r\n            ) {\r\n                Card(\r\n                    modifier = Modifier.fillMaxWidth(),\r\n                    shape = MaterialTheme.shapes.medium,\r\n                    elevation = CardDefaults.cardElevation(4.dp),\r\n                    colors = CardDefaults.cardColors(\r\n                        containerColor = MaterialTheme.colorScheme.primaryContainer\r\n                    )\r\n                ) {\r\n                    Column(\r\n                        modifier = Modifier.padding(16.dp),\r\n                        horizontalAlignment = Alignment.CenterHorizontally\r\n                    ) {\r\n                        Text(\r\n                            text = \"Session Complete!\",\r\n                            style = MaterialTheme.typography.titleMedium.copy(\r\n                                color = MaterialTheme.colorScheme.onPrimaryContainer,\r\n                                fontWeight = FontWeight.Bold\r\n                            ),\r\n                            textAlign = TextAlign.Center\r\n                        )\r\n                        Spacer(Modifier.height(8.dp))\r\n                        Text(\r\n                            text = \"2-minute session has finished.\",\r\n                            style = MaterialTheme.typography.bodyMedium.copy(\r\n                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)\r\n                            ),\r\n                            textAlign = TextAlign.Center\r\n                        )\r\n                        Spacer(Modifier.height(16.dp))\r\n                        Button(\r\n                            onClick = onViewResult,\r\n                            modifier = Modifier\r\n                                .fillMaxWidth()\r\n                                .height(52.dp),\r\n                            colors = ButtonDefaults.buttonColors(\r\n                                containerColor = MaterialTheme.colorScheme.primary,\r\n                                contentColor = MaterialTheme.colorScheme.onPrimary\r\n                            ),\r\n                            shape = MaterialTheme.shapes.medium\r\n                        ) {\r\n                            Icon(\r\n                                imageVector = Icons.Default.Timer,\r\n                                contentDescription = null\r\n                            )\r\n                            Spacer(Modifier.width(8.dp))\r\n                            Text(\r\n                                text = \"View Result\",\r\n                                style = MaterialTheme.typography.titleMedium.copy(\r\n                                    fontWeight = FontWeight.Bold\r\n                                )\r\n                            )\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nfun GraspReleaseAnimation(isGrasp: Boolean) {\r\n    Card(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .height(200.dp),\r\n        shape = MaterialTheme.shapes.medium,\r\n        elevation = CardDefaults.cardElevation(4.dp),\r\n        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)\r\n    ) {\r\n        Box(\r\n            modifier = Modifier.fillMaxSize(),\r\n            contentAlignment = Alignment.Center\r\n        ) {\r\n            Crossfade(\r\n                targetState = isGrasp,\r\n                animationSpec = tween(500)\r\n            ) { grasp ->\r\n                Column(\r\n                    horizontalAlignment = Alignment.CenterHorizontally,\r\n                    verticalArrangement = Arrangement.Center\r\n                ) {\r\n                    Icon(\r\n                        imageVector = if (grasp) Icons.Default.PanTool else Icons.Default.Handyman,\r\n                        contentDescription = null,\r\n                        tint = if (grasp) Color(0xFF34A853) else Color(0xFFEA4335),\r\n                        modifier = Modifier.size(80.dp)\r\n                    )\r\n                    Spacer(Modifier.height(8.dp))\r\n                    Text(\r\n                        text = if (grasp) \"Grasp\" else \"Release\",\r\n                        style = MaterialTheme.typography.headlineMedium,\r\n                        color = if (grasp) Color(0xFF34A853) else Color(0xFFEA4335),\r\n                        fontWeight = FontWeight.Bold\r\n                    )\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n"
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt",
+                        "fsPath": "app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt"
+                    }
+                ]
+            },
+            "createdAt": 1750843836937,
+            "isInternal": false,
+            "rawContent": {
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "Unresolved reference 'di'."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "Unresolved reference 'AppModule'."
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "03d3a9a2-60b3-4d77-be1b-dafacc9b3c8c",
+            "role": "assistant",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "The error messages \"Unresolved reference 'di'\" and \"Unresolved reference 'AppModule'\" indicate that the Kotlin compiler cannot find the `di` package or the `AppModule` class within your project. Here are some steps to resolve these issues:\n\n1. **Check Package Structure**: Ensure that the `di` package exists under `com.example.gloveapp`. The directory structure should match the package declaration. For example, there should be a folder named `di` inside `com/example/gloveapp/`.\n\n2. **Verify `AppModule` Class**: Ensure that the `AppModule` class is defined within the `di` package. The class should be located in a file named `AppModule.kt` inside the `di` directory.\n\n3. **Build and Sync Project**: Sometimes, the IDE might not recognize new files or changes immediately. Try rebuilding your project and syncing with Gradle files:\n   - Go to `Build` > `Rebuild Project`.\n   - Go to `File` > `Sync Project with Gradle Files`.\n\n4. **Check Imports**: Ensure that the import statement for `AppModule` is correct. It should match the package and class name exactly:\n   ```kotlin\n   import com.example.gloveapp.di.AppModule\n   ```\n\n5. **Dependencies**: If `AppModule` is part of a library or module, ensure that the necessary dependencies are included in your `build.gradle` file.\n\n6. **Clean Project**: If the above steps do not resolve the issue, try cleaning the project:\n   - Go to `Build` > `Clean Project`.\n\nIf you have verified all the above and the issue persists, please provide more details about the `di` package and `AppModule` class, such as their definitions and locations within your project."
+                }
+            ],
+            "context": {
+                "currentFile": {
+                    "path": "app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                    "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                    "sources": [
+                        "opened_tab"
+                    ],
+                    "content": "package com.example.gloveapp.ui\r\n\r\nimport android.widget.Toast\r\nimport androidx.compose.animation.*\r\nimport androidx.compose.animation.core.tween\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.layout.*\r\nimport androidx.compose.material.icons.Icons\r\nimport androidx.compose.material.icons.filled.*\r\nimport androidx.compose.material.icons.rounded.NightlightRound\r\nimport androidx.compose.material.icons.rounded.WbSunny\r\nimport androidx.compose.material3.*\r\nimport androidx.compose.runtime.*\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.platform.LocalContext\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.text.style.TextAlign\r\nimport androidx.compose.ui.unit.dp\r\nimport com.example.gloveapp.AppScreen\r\nimport com.example.gloveapp.GetReadyScreen\r\nimport com.example.gloveapp.ScanScreen\r\nimport com.example.gloveapp.ScannedDeviceInfo\r\nimport com.example.gloveapp.TimerDisplay\r\nimport com.example.gloveapp.auth.AuthViewModel\r\nimport com.example.gloveapp.ui.theme.GloveAppTheme\r\nimport com.github.mikephil.charting.data.Entry\r\nimport kotlinx.coroutines.delay\r\nimport java.text.SimpleDateFormat\r\nimport java.util.*\r\n\r\n@Composable\r\nfun PatientInterface(\r\n    onToggleTheme: () -> Unit,\r\n    isDarkTheme: Boolean,\r\n    fsrEntries: List<List<Entry>>,\r\n    flexEntries: List<List<Entry>>,\r\n    authViewModel: AuthViewModel,\r\n    onScanClick: () -> Unit,\r\n    isScanning: Boolean,\r\n    scannedDevices: List<ScannedDeviceInfo>,\r\n    rssiMap: Map<String, Int>,\r\n    connectToDevice: (ScannedDeviceInfo) -> Unit,\r\n    stopScan: () -> Unit,\r\n    writeDataControl: (Boolean) -> Unit,\r\n    disconnectGatt: () -> Unit,\r\n    clearData: () -> Unit,\r\n    isDataStreamingEnabled: Boolean,\r\n    isDeviceReadyForControl: Boolean,\r\n    isTimerRunning: Boolean,\r\n    timerStartTimeMillis: Long,\r\n    timerAccumulatedMillis: Long\r\n) {\r\n    var currentScreen by remember { mutableStateOf(AppScreen.SCAN) }\r\n    var scanInitiatedState by remember { mutableStateOf(false) }\r\n    var isLoadingPermissions by remember { mutableStateOf(false) }\r\n    val context = LocalContext.current\r\n\r\n    GloveAppTheme(darkTheme = isDarkTheme) {\r\n        Crossfade(\r\n            targetState = currentScreen,\r\n            animationSpec = tween(durationMillis = 500)\r\n        ) { targetScreen ->\r\n            when (targetScreen) {\r\n                AppScreen.SCAN -> ScanScreen(\r\n                    devices = scannedDevices,\r\n                    rssiValues = rssiMap,\r\n                    isScanning = isScanning,\r\n                    onScanClick = {\r\n                        scanInitiatedState = true\r\n                        isLoadingPermissions = true\r\n                        onScanClick()\r\n                    },\r\n                    onDeviceClick = { device ->\r\n                        connectToDevice(device)\r\n                        stopScan()\r\n                        currentScreen = AppScreen.GET_READY\r\n                    },\r\n                    scanInitiated = scanInitiatedState,\r\n                    isLoadingPermissions = isLoadingPermissions,\r\n                    isDarkTheme = isDarkTheme,\r\n                    onToggleTheme = onToggleTheme\r\n                )\r\n                AppScreen.GET_READY -> GetReadyScreen(\r\n                    onCountdownComplete = {\r\n                        try {\r\n                            writeDataControl(true)\r\n                            currentScreen = AppScreen.MAIN\r\n                        } catch (e: Exception) {\r\n                            Toast.makeText(context, \"Error starting data stream: ${e.message}\", Toast.LENGTH_LONG).show()\r\n                            currentScreen = AppScreen.MAIN\r\n                        }\r\n                    },\r\n                    isDarkTheme = isDarkTheme,\r\n                    onToggleTheme = onToggleTheme\r\n                )\r\n                AppScreen.MAIN -> PatientMainScreen(\r\n                    onScanClick = {\r\n                        try {\r\n                            writeDataControl(false)\r\n                            disconnectGatt()\r\n                            clearData()\r\n                            currentScreen = AppScreen.SCAN\r\n                            scanInitiatedState = false\r\n                        } catch (e: Exception) {\r\n                            Toast.makeText(context, \"Error disconnecting: ${e.message}\", Toast.LENGTH_SHORT).show()\r\n                        }\r\n                    },\r\n                    fsrEntries = fsrEntries,\r\n                    flexEntries = flexEntries,\r\n                    onStartStreaming = { currentScreen = AppScreen.GET_READY },\r\n                    onStopStreaming = {\r\n                        try {\r\n                            writeDataControl(false)\r\n                        } catch (e: Exception) {\r\n                            Toast.makeText(context, \"Error stopping streaming\", Toast.LENGTH_SHORT).show()\r\n                        }\r\n                    },\r\n                    isDarkTheme = isDarkTheme,\r\n                    onToggleTheme = onToggleTheme,\r\n                    isDataStreamingEnabled = isDataStreamingEnabled,\r\n                    isDeviceReadyForControl = isDeviceReadyForControl,\r\n                    isTimerRunning = isTimerRunning,\r\n                    timerStartTimeMillis = timerStartTimeMillis,\r\n                    timerAccumulatedMillis = timerAccumulatedMillis,\r\n                    onViewResult = {\r\n                        val patientUid = authViewModel.currentUser.value?.uid ?: return@PatientMainScreen\r\n                        val sessionData = mapOf(\r\n                            \"timestamp\" to SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss'Z'\", Locale.getDefault()).format(Date()),\r\n                            \"graspData\" to fsrEntries.flatten().map { it.y },\r\n                            \"releaseData\" to flexEntries.flatten().map { it.y },\r\n                            \"duration\" to timerAccumulatedMillis\r\n                        )\r\n                        authViewModel.saveSession(\r\n                            patientUid = patientUid,\r\n                            sessionData = sessionData,\r\n                            onSuccess = {\r\n                                Toast.makeText(context, \"Session saved\", Toast.LENGTH_SHORT).show()\r\n                            },\r\n                            onError = { error ->\r\n                                Toast.makeText(context, \"Error saving session: $error\", Toast.LENGTH_SHORT).show()\r\n                            }\r\n                        )\r\n                    }\r\n                )\r\n                else -> Unit\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@OptIn(ExperimentalMaterial3Api::class)\r\n@Composable\r\nfun PatientMainScreen(\r\n    onScanClick: () -> Unit,\r\n    fsrEntries: List<List<Entry>>,\r\n    flexEntries: List<List<Entry>>,\r\n    onStartStreaming: () -> Unit,\r\n    onStopStreaming: () -> Unit,\r\n    isDarkTheme: Boolean,\r\n    onToggleTheme: () -> Unit,\r\n    isDataStreamingEnabled: Boolean,\r\n    isDeviceReadyForControl: Boolean,\r\n    isTimerRunning: Boolean,\r\n    timerStartTimeMillis: Long,\r\n    timerAccumulatedMillis: Long,\r\n    onViewResult: () -> Unit\r\n) {\r\n    var isGrasp by remember { mutableStateOf(true) }\r\n    var isTimerCompleted by remember { mutableStateOf(false) }\r\n\r\n    LaunchedEffect(isTimerRunning, timerStartTimeMillis, timerAccumulatedMillis) {\r\n        if (isTimerRunning) {\r\n            val startTime = timerStartTimeMillis\r\n            val elapsedSinceStart = System.currentTimeMillis() - startTime + timerAccumulatedMillis\r\n            if (elapsedSinceStart >= 120_000L) {\r\n                onStopStreaming()\r\n                isTimerCompleted = true\r\n            } else {\r\n                isTimerCompleted = false\r\n                delay(120_000L - elapsedSinceStart)\r\n                if (isTimerRunning) {\r\n                    onStopStreaming()\r\n                    isTimerCompleted = true\r\n                }\r\n            }\r\n        } else {\r\n            isTimerCompleted = timerAccumulatedMillis >= 120_000L\r\n        }\r\n    }\r\n\r\n    LaunchedEffect(isDataStreamingEnabled, timerStartTimeMillis) {\r\n        if (isDataStreamingEnabled && isTimerRunning) {\r\n            while (isDataStreamingEnabled) {\r\n                isGrasp = true\r\n                delay(5000L)\r\n                if (!isDataStreamingEnabled) break\r\n                isGrasp = false\r\n                delay(5000L)\r\n            }\r\n        }\r\n    }\r\n\r\n    Scaffold(\r\n        topBar = {\r\n            TopAppBar(\r\n                title = { Text(\"Patient Data\", color = MaterialTheme.colorScheme.onPrimary) },\r\n                navigationIcon = {\r\n                    IconButton(onClick = onScanClick) {\r\n                        Icon(\r\n                            Icons.Default.PowerSettingsNew,\r\n                            contentDescription = \"Disconnect and Scan\",\r\n                            tint = MaterialTheme.colorScheme.onPrimary\r\n                        )\r\n                    }\r\n                },\r\n                actions = {\r\n                    TimerDisplay(\r\n                        isRunning = isTimerRunning,\r\n                        startTimeMillis = timerStartTimeMillis,\r\n                        accumulatedMillis = timerAccumulatedMillis,\r\n                        color = MaterialTheme.colorScheme.onPrimary\r\n                    )\r\n                    Spacer(Modifier.width(8.dp))\r\n                    Row(\r\n                        verticalAlignment = Alignment.CenterVertically,\r\n                        modifier = Modifier.padding(end = 8.dp)\r\n                    ) {\r\n                        Icon(\r\n                            imageVector = if (isDarkTheme) Icons.Rounded.NightlightRound else Icons.Rounded.WbSunny,\r\n                            contentDescription = if (isDarkTheme) \"Dark Mode\" else \"Light Mode\",\r\n                            tint = MaterialTheme.colorScheme.onPrimary\r\n                        )\r\n                        Spacer(Modifier.width(4.dp))\r\n                        Switch(\r\n                            checked = isDarkTheme,\r\n                            onCheckedChange = { onToggleTheme() },\r\n                            colors = SwitchDefaults.colors(\r\n                                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,\r\n                                uncheckedThumbColor = MaterialTheme.colorScheme.onPrimary,\r\n                                checkedTrackColor = MaterialTheme.colorScheme.secondary,\r\n                                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant\r\n                            )\r\n                        )\r\n                    }\r\n                },\r\n                colors = TopAppBarDefaults.mediumTopAppBarColors(\r\n                    containerColor = MaterialTheme.colorScheme.primary,\r\n                    titleContentColor = MaterialTheme.colorScheme.onPrimary\r\n                )\r\n            )\r\n        }\r\n    ) { padding ->\r\n        Column(\r\n            modifier = Modifier\r\n                .fillMaxSize()\r\n                .background(MaterialTheme.colorScheme.background)\r\n                .padding(padding)\r\n                .padding(16.dp),\r\n            verticalArrangement = Arrangement.spacedBy(16.dp)\r\n        ) {\r\n            Button(\r\n                onClick = { if (isDataStreamingEnabled) onStopStreaming() else onStartStreaming() },\r\n                modifier = Modifier\r\n                    .fillMaxWidth()\r\n                    .height(52.dp),\r\n                enabled = isDeviceReadyForControl,\r\n                colors = ButtonDefaults.buttonColors(\r\n                    containerColor = if (isDataStreamingEnabled) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,\r\n                    contentColor = if (isDataStreamingEnabled) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary,\r\n                    disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),\r\n                    disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)\r\n                ),\r\n                shape = MaterialTheme.shapes.medium\r\n            ) {\r\n                Icon(\r\n                    imageVector = if (isDataStreamingEnabled) Icons.Default.Stop else Icons.Default.Bluetooth,\r\n                    contentDescription = null\r\n                )\r\n                Spacer(Modifier.width(8.dp))\r\n                Text(if (isDataStreamingEnabled) \"Stop Data\" else \"Start Data\")\r\n            }\r\n\r\n            AnimatedVisibility(\r\n                visible = isDataStreamingEnabled,\r\n                enter = fadeIn(tween(500)) + scaleIn(tween(500)),\r\n                exit = fadeOut(tween(300)) + scaleOut(tween(300))\r\n            ) {\r\n                GraspReleaseAnimation(isGrasp = isGrasp)\r\n            }\r\n\r\n            AnimatedVisibility(\r\n                visible = isTimerCompleted,\r\n                enter = slideInVertically(tween(500)) { it / 2 } + fadeIn(tween(500)),\r\n                exit = slideOutVertically(tween(300)) { it / 2 } + fadeOut(tween(300))\r\n            ) {\r\n                Card(\r\n                    modifier = Modifier.fillMaxWidth(),\r\n                    shape = MaterialTheme.shapes.medium,\r\n                    elevation = CardDefaults.cardElevation(4.dp),\r\n                    colors = CardDefaults.cardColors(\r\n                        containerColor = MaterialTheme.colorScheme.primaryContainer\r\n                    )\r\n                ) {\r\n                    Column(\r\n                        modifier = Modifier.padding(16.dp),\r\n                        horizontalAlignment = Alignment.CenterHorizontally\r\n                    ) {\r\n                        Text(\r\n                            text = \"Session Complete!\",\r\n                            style = MaterialTheme.typography.titleMedium.copy(\r\n                                color = MaterialTheme.colorScheme.onPrimaryContainer,\r\n                                fontWeight = FontWeight.Bold\r\n                            ),\r\n                            textAlign = TextAlign.Center\r\n                        )\r\n                        Spacer(Modifier.height(8.dp))\r\n                        Text(\r\n                            text = \"2-minute session has finished.\",\r\n                            style = MaterialTheme.typography.bodyMedium.copy(\r\n                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)\r\n                            ),\r\n                            textAlign = TextAlign.Center\r\n                        )\r\n                        Spacer(Modifier.height(16.dp))\r\n                        Button(\r\n                            onClick = onViewResult,\r\n                            modifier = Modifier\r\n                                .fillMaxWidth()\r\n                                .height(52.dp),\r\n                            colors = ButtonDefaults.buttonColors(\r\n                                containerColor = MaterialTheme.colorScheme.primary,\r\n                                contentColor = MaterialTheme.colorScheme.onPrimary\r\n                            ),\r\n                            shape = MaterialTheme.shapes.medium\r\n                        ) {\r\n                            Icon(\r\n                                imageVector = Icons.Default.Timer,\r\n                                contentDescription = null\r\n                            )\r\n                            Spacer(Modifier.width(8.dp))\r\n                            Text(\r\n                                text = \"View Result\",\r\n                                style = MaterialTheme.typography.titleMedium.copy(\r\n                                    fontWeight = FontWeight.Bold\r\n                                )\r\n                            )\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nfun GraspReleaseAnimation(isGrasp: Boolean) {\r\n    Card(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .height(200.dp),\r\n        shape = MaterialTheme.shapes.medium,\r\n        elevation = CardDefaults.cardElevation(4.dp),\r\n        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)\r\n    ) {\r\n        Box(\r\n            modifier = Modifier.fillMaxSize(),\r\n            contentAlignment = Alignment.Center\r\n        ) {\r\n            Crossfade(\r\n                targetState = isGrasp,\r\n                animationSpec = tween(500)\r\n            ) { grasp ->\r\n                Column(\r\n                    horizontalAlignment = Alignment.CenterHorizontally,\r\n                    verticalArrangement = Arrangement.Center\r\n                ) {\r\n                    Icon(\r\n                        imageVector = if (grasp) Icons.Default.PanTool else Icons.Default.Handyman,\r\n                        contentDescription = null,\r\n                        tint = if (grasp) Color(0xFF34A853) else Color(0xFFEA4335),\r\n                        modifier = Modifier.size(80.dp)\r\n                    )\r\n                    Spacer(Modifier.height(8.dp))\r\n                    Text(\r\n                        text = if (grasp) \"Grasp\" else \"Release\",\r\n                        style = MaterialTheme.typography.headlineMedium,\r\n                        color = if (grasp) Color(0xFF34A853) else Color(0xFFEA4335),\r\n                        fontWeight = FontWeight.Bold\r\n                    )\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n"
+                },
+                "codebaseEnabled": true,
+                "ragFiles": [
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/GloveApplication.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt",
+                        "sources": [
+                            "keyword_search"
+                        ]
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\di\\AppModule.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\di\\AppModule.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\bluetooth\\BluetoothService.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\bluetooth\\BluetoothService.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\navigation\\AuthNavigation.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\navigation\\AuthNavigation.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\ui\\auth\\AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\auth\\AuthScreen.kt",
+                        "sources": []
+                    },
+                    {
+                        "path": ".zencoder\\.gitignore",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\.zencoder\\.gitignore",
+                        "sources": []
+                    },
+                    {
+                        "path": "gradle\\libs.versions.toml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\gradle\\libs.versions.toml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\.gitignore",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\.gitignore",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\values\\strings.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\values\\strings.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app\\src\\main\\res\\drawable\\ic_notification.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\drawable\\ic_notification.xml",
+                        "sources": []
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/MainActivity.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\MainActivity.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/PatientRequest.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\PatientRequest.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\build.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Theme.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Theme.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/AppScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\AppScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/PatientInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/DoctorInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\DoctorInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthModels.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthModels.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthViewModel.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthViewModel.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/auth/AuthScreen.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\auth\\AuthScreen.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/UserManual.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\UserManual.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ScannedDevicesInfo.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ScannedDevicesInfo.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "settings.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\settings.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/build.gradle.kts",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\build.gradle.kts",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/ui/theme/Type.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\ui\\theme\\Type.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/GloveApplication.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/build/generated/res/processDebugGoogleServices/values/values.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\build\\generated\\res\\processDebugGoogleServices\\values\\values.xml",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/java/com/example/gloveapp/MessagingService.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\MessagingService.kt",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    },
+                    {
+                        "path": "app/src/main/res/drawable/ic_notification_icon.xml",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\res\\drawable\\ic_notification_icon.xml",
+                        "sources": [
+                            "opened_tab"
+                        ]
+                    }
+                ],
+                "rerankedFiles": [
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt",
+                        "fsPath": "app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt"
+                    }
+                ],
+                "usedFilePaths": [
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "fsPath": "C:\\Users\\abhi\\AndroidStudioProjects\\Gloveapp\\app\\src\\main\\java\\com\\example\\gloveapp\\PatientInterface.kt",
+                        "sources": [
+                            "opened_tab"
+                        ],
+                        "content": "package com.example.gloveapp.ui\r\n\r\nimport android.widget.Toast\r\nimport androidx.compose.animation.*\r\nimport androidx.compose.animation.core.tween\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.layout.*\r\nimport androidx.compose.material.icons.Icons\r\nimport androidx.compose.material.icons.filled.*\r\nimport androidx.compose.material.icons.rounded.NightlightRound\r\nimport androidx.compose.material.icons.rounded.WbSunny\r\nimport androidx.compose.material3.*\r\nimport androidx.compose.runtime.*\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.platform.LocalContext\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.text.style.TextAlign\r\nimport androidx.compose.ui.unit.dp\r\nimport com.example.gloveapp.AppScreen\r\nimport com.example.gloveapp.GetReadyScreen\r\nimport com.example.gloveapp.ScanScreen\r\nimport com.example.gloveapp.ScannedDeviceInfo\r\nimport com.example.gloveapp.TimerDisplay\r\nimport com.example.gloveapp.auth.AuthViewModel\r\nimport com.example.gloveapp.ui.theme.GloveAppTheme\r\nimport com.github.mikephil.charting.data.Entry\r\nimport kotlinx.coroutines.delay\r\nimport java.text.SimpleDateFormat\r\nimport java.util.*\r\n\r\n@Composable\r\nfun PatientInterface(\r\n    onToggleTheme: () -> Unit,\r\n    isDarkTheme: Boolean,\r\n    fsrEntries: List<List<Entry>>,\r\n    flexEntries: List<List<Entry>>,\r\n    authViewModel: AuthViewModel,\r\n    onScanClick: () -> Unit,\r\n    isScanning: Boolean,\r\n    scannedDevices: List<ScannedDeviceInfo>,\r\n    rssiMap: Map<String, Int>,\r\n    connectToDevice: (ScannedDeviceInfo) -> Unit,\r\n    stopScan: () -> Unit,\r\n    writeDataControl: (Boolean) -> Unit,\r\n    disconnectGatt: () -> Unit,\r\n    clearData: () -> Unit,\r\n    isDataStreamingEnabled: Boolean,\r\n    isDeviceReadyForControl: Boolean,\r\n    isTimerRunning: Boolean,\r\n    timerStartTimeMillis: Long,\r\n    timerAccumulatedMillis: Long\r\n) {\r\n    var currentScreen by remember { mutableStateOf(AppScreen.SCAN) }\r\n    var scanInitiatedState by remember { mutableStateOf(false) }\r\n    var isLoadingPermissions by remember { mutableStateOf(false) }\r\n    val context = LocalContext.current\r\n\r\n    GloveAppTheme(darkTheme = isDarkTheme) {\r\n        Crossfade(\r\n            targetState = currentScreen,\r\n            animationSpec = tween(durationMillis = 500)\r\n        ) { targetScreen ->\r\n            when (targetScreen) {\r\n                AppScreen.SCAN -> ScanScreen(\r\n                    devices = scannedDevices,\r\n                    rssiValues = rssiMap,\r\n                    isScanning = isScanning,\r\n                    onScanClick = {\r\n                        scanInitiatedState = true\r\n                        isLoadingPermissions = true\r\n                        onScanClick()\r\n                    },\r\n                    onDeviceClick = { device ->\r\n                        connectToDevice(device)\r\n                        stopScan()\r\n                        currentScreen = AppScreen.GET_READY\r\n                    },\r\n                    scanInitiated = scanInitiatedState,\r\n                    isLoadingPermissions = isLoadingPermissions,\r\n                    isDarkTheme = isDarkTheme,\r\n                    onToggleTheme = onToggleTheme\r\n                )\r\n                AppScreen.GET_READY -> GetReadyScreen(\r\n                    onCountdownComplete = {\r\n                        try {\r\n                            writeDataControl(true)\r\n                            currentScreen = AppScreen.MAIN\r\n                        } catch (e: Exception) {\r\n                            Toast.makeText(context, \"Error starting data stream: ${e.message}\", Toast.LENGTH_LONG).show()\r\n                            currentScreen = AppScreen.MAIN\r\n                        }\r\n                    },\r\n                    isDarkTheme = isDarkTheme,\r\n                    onToggleTheme = onToggleTheme\r\n                )\r\n                AppScreen.MAIN -> PatientMainScreen(\r\n                    onScanClick = {\r\n                        try {\r\n                            writeDataControl(false)\r\n                            disconnectGatt()\r\n                            clearData()\r\n                            currentScreen = AppScreen.SCAN\r\n                            scanInitiatedState = false\r\n                        } catch (e: Exception) {\r\n                            Toast.makeText(context, \"Error disconnecting: ${e.message}\", Toast.LENGTH_SHORT).show()\r\n                        }\r\n                    },\r\n                    fsrEntries = fsrEntries,\r\n                    flexEntries = flexEntries,\r\n                    onStartStreaming = { currentScreen = AppScreen.GET_READY },\r\n                    onStopStreaming = {\r\n                        try {\r\n                            writeDataControl(false)\r\n                        } catch (e: Exception) {\r\n                            Toast.makeText(context, \"Error stopping streaming\", Toast.LENGTH_SHORT).show()\r\n                        }\r\n                    },\r\n                    isDarkTheme = isDarkTheme,\r\n                    onToggleTheme = onToggleTheme,\r\n                    isDataStreamingEnabled = isDataStreamingEnabled,\r\n                    isDeviceReadyForControl = isDeviceReadyForControl,\r\n                    isTimerRunning = isTimerRunning,\r\n                    timerStartTimeMillis = timerStartTimeMillis,\r\n                    timerAccumulatedMillis = timerAccumulatedMillis,\r\n                    onViewResult = {\r\n                        val patientUid = authViewModel.currentUser.value?.uid ?: return@PatientMainScreen\r\n                        val sessionData = mapOf(\r\n                            \"timestamp\" to SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss'Z'\", Locale.getDefault()).format(Date()),\r\n                            \"graspData\" to fsrEntries.flatten().map { it.y },\r\n                            \"releaseData\" to flexEntries.flatten().map { it.y },\r\n                            \"duration\" to timerAccumulatedMillis\r\n                        )\r\n                        authViewModel.saveSession(\r\n                            patientUid = patientUid,\r\n                            sessionData = sessionData,\r\n                            onSuccess = {\r\n                                Toast.makeText(context, \"Session saved\", Toast.LENGTH_SHORT).show()\r\n                            },\r\n                            onError = { error ->\r\n                                Toast.makeText(context, \"Error saving session: $error\", Toast.LENGTH_SHORT).show()\r\n                            }\r\n                        )\r\n                    }\r\n                )\r\n                else -> Unit\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@OptIn(ExperimentalMaterial3Api::class)\r\n@Composable\r\nfun PatientMainScreen(\r\n    onScanClick: () -> Unit,\r\n    fsrEntries: List<List<Entry>>,\r\n    flexEntries: List<List<Entry>>,\r\n    onStartStreaming: () -> Unit,\r\n    onStopStreaming: () -> Unit,\r\n    isDarkTheme: Boolean,\r\n    onToggleTheme: () -> Unit,\r\n    isDataStreamingEnabled: Boolean,\r\n    isDeviceReadyForControl: Boolean,\r\n    isTimerRunning: Boolean,\r\n    timerStartTimeMillis: Long,\r\n    timerAccumulatedMillis: Long,\r\n    onViewResult: () -> Unit\r\n) {\r\n    var isGrasp by remember { mutableStateOf(true) }\r\n    var isTimerCompleted by remember { mutableStateOf(false) }\r\n\r\n    LaunchedEffect(isTimerRunning, timerStartTimeMillis, timerAccumulatedMillis) {\r\n        if (isTimerRunning) {\r\n            val startTime = timerStartTimeMillis\r\n            val elapsedSinceStart = System.currentTimeMillis() - startTime + timerAccumulatedMillis\r\n            if (elapsedSinceStart >= 120_000L) {\r\n                onStopStreaming()\r\n                isTimerCompleted = true\r\n            } else {\r\n                isTimerCompleted = false\r\n                delay(120_000L - elapsedSinceStart)\r\n                if (isTimerRunning) {\r\n                    onStopStreaming()\r\n                    isTimerCompleted = true\r\n                }\r\n            }\r\n        } else {\r\n            isTimerCompleted = timerAccumulatedMillis >= 120_000L\r\n        }\r\n    }\r\n\r\n    LaunchedEffect(isDataStreamingEnabled, timerStartTimeMillis) {\r\n        if (isDataStreamingEnabled && isTimerRunning) {\r\n            while (isDataStreamingEnabled) {\r\n                isGrasp = true\r\n                delay(5000L)\r\n                if (!isDataStreamingEnabled) break\r\n                isGrasp = false\r\n                delay(5000L)\r\n            }\r\n        }\r\n    }\r\n\r\n    Scaffold(\r\n        topBar = {\r\n            TopAppBar(\r\n                title = { Text(\"Patient Data\", color = MaterialTheme.colorScheme.onPrimary) },\r\n                navigationIcon = {\r\n                    IconButton(onClick = onScanClick) {\r\n                        Icon(\r\n                            Icons.Default.PowerSettingsNew,\r\n                            contentDescription = \"Disconnect and Scan\",\r\n                            tint = MaterialTheme.colorScheme.onPrimary\r\n                        )\r\n                    }\r\n                },\r\n                actions = {\r\n                    TimerDisplay(\r\n                        isRunning = isTimerRunning,\r\n                        startTimeMillis = timerStartTimeMillis,\r\n                        accumulatedMillis = timerAccumulatedMillis,\r\n                        color = MaterialTheme.colorScheme.onPrimary\r\n                    )\r\n                    Spacer(Modifier.width(8.dp))\r\n                    Row(\r\n                        verticalAlignment = Alignment.CenterVertically,\r\n                        modifier = Modifier.padding(end = 8.dp)\r\n                    ) {\r\n                        Icon(\r\n                            imageVector = if (isDarkTheme) Icons.Rounded.NightlightRound else Icons.Rounded.WbSunny,\r\n                            contentDescription = if (isDarkTheme) \"Dark Mode\" else \"Light Mode\",\r\n                            tint = MaterialTheme.colorScheme.onPrimary\r\n                        )\r\n                        Spacer(Modifier.width(4.dp))\r\n                        Switch(\r\n                            checked = isDarkTheme,\r\n                            onCheckedChange = { onToggleTheme() },\r\n                            colors = SwitchDefaults.colors(\r\n                                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,\r\n                                uncheckedThumbColor = MaterialTheme.colorScheme.onPrimary,\r\n                                checkedTrackColor = MaterialTheme.colorScheme.secondary,\r\n                                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant\r\n                            )\r\n                        )\r\n                    }\r\n                },\r\n                colors = TopAppBarDefaults.mediumTopAppBarColors(\r\n                    containerColor = MaterialTheme.colorScheme.primary,\r\n                    titleContentColor = MaterialTheme.colorScheme.onPrimary\r\n                )\r\n            )\r\n        }\r\n    ) { padding ->\r\n        Column(\r\n            modifier = Modifier\r\n                .fillMaxSize()\r\n                .background(MaterialTheme.colorScheme.background)\r\n                .padding(padding)\r\n                .padding(16.dp),\r\n            verticalArrangement = Arrangement.spacedBy(16.dp)\r\n        ) {\r\n            Button(\r\n                onClick = { if (isDataStreamingEnabled) onStopStreaming() else onStartStreaming() },\r\n                modifier = Modifier\r\n                    .fillMaxWidth()\r\n                    .height(52.dp),\r\n                enabled = isDeviceReadyForControl,\r\n                colors = ButtonDefaults.buttonColors(\r\n                    containerColor = if (isDataStreamingEnabled) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,\r\n                    contentColor = if (isDataStreamingEnabled) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary,\r\n                    disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),\r\n                    disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)\r\n                ),\r\n                shape = MaterialTheme.shapes.medium\r\n            ) {\r\n                Icon(\r\n                    imageVector = if (isDataStreamingEnabled) Icons.Default.Stop else Icons.Default.Bluetooth,\r\n                    contentDescription = null\r\n                )\r\n                Spacer(Modifier.width(8.dp))\r\n                Text(if (isDataStreamingEnabled) \"Stop Data\" else \"Start Data\")\r\n            }\r\n\r\n            AnimatedVisibility(\r\n                visible = isDataStreamingEnabled,\r\n                enter = fadeIn(tween(500)) + scaleIn(tween(500)),\r\n                exit = fadeOut(tween(300)) + scaleOut(tween(300))\r\n            ) {\r\n                GraspReleaseAnimation(isGrasp = isGrasp)\r\n            }\r\n\r\n            AnimatedVisibility(\r\n                visible = isTimerCompleted,\r\n                enter = slideInVertically(tween(500)) { it / 2 } + fadeIn(tween(500)),\r\n                exit = slideOutVertically(tween(300)) { it / 2 } + fadeOut(tween(300))\r\n            ) {\r\n                Card(\r\n                    modifier = Modifier.fillMaxWidth(),\r\n                    shape = MaterialTheme.shapes.medium,\r\n                    elevation = CardDefaults.cardElevation(4.dp),\r\n                    colors = CardDefaults.cardColors(\r\n                        containerColor = MaterialTheme.colorScheme.primaryContainer\r\n                    )\r\n                ) {\r\n                    Column(\r\n                        modifier = Modifier.padding(16.dp),\r\n                        horizontalAlignment = Alignment.CenterHorizontally\r\n                    ) {\r\n                        Text(\r\n                            text = \"Session Complete!\",\r\n                            style = MaterialTheme.typography.titleMedium.copy(\r\n                                color = MaterialTheme.colorScheme.onPrimaryContainer,\r\n                                fontWeight = FontWeight.Bold\r\n                            ),\r\n                            textAlign = TextAlign.Center\r\n                        )\r\n                        Spacer(Modifier.height(8.dp))\r\n                        Text(\r\n                            text = \"2-minute session has finished.\",\r\n                            style = MaterialTheme.typography.bodyMedium.copy(\r\n                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)\r\n                            ),\r\n                            textAlign = TextAlign.Center\r\n                        )\r\n                        Spacer(Modifier.height(16.dp))\r\n                        Button(\r\n                            onClick = onViewResult,\r\n                            modifier = Modifier\r\n                                .fillMaxWidth()\r\n                                .height(52.dp),\r\n                            colors = ButtonDefaults.buttonColors(\r\n                                containerColor = MaterialTheme.colorScheme.primary,\r\n                                contentColor = MaterialTheme.colorScheme.onPrimary\r\n                            ),\r\n                            shape = MaterialTheme.shapes.medium\r\n                        ) {\r\n                            Icon(\r\n                                imageVector = Icons.Default.Timer,\r\n                                contentDescription = null\r\n                            )\r\n                            Spacer(Modifier.width(8.dp))\r\n                            Text(\r\n                                text = \"View Result\",\r\n                                style = MaterialTheme.typography.titleMedium.copy(\r\n                                    fontWeight = FontWeight.Bold\r\n                                )\r\n                            )\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nfun GraspReleaseAnimation(isGrasp: Boolean) {\r\n    Card(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .height(200.dp),\r\n        shape = MaterialTheme.shapes.medium,\r\n        elevation = CardDefaults.cardElevation(4.dp),\r\n        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)\r\n    ) {\r\n        Box(\r\n            modifier = Modifier.fillMaxSize(),\r\n            contentAlignment = Alignment.Center\r\n        ) {\r\n            Crossfade(\r\n                targetState = isGrasp,\r\n                animationSpec = tween(500)\r\n            ) { grasp ->\r\n                Column(\r\n                    horizontalAlignment = Alignment.CenterHorizontally,\r\n                    verticalArrangement = Arrangement.Center\r\n                ) {\r\n                    Icon(\r\n                        imageVector = if (grasp) Icons.Default.PanTool else Icons.Default.Handyman,\r\n                        contentDescription = null,\r\n                        tint = if (grasp) Color(0xFF34A853) else Color(0xFFEA4335),\r\n                        modifier = Modifier.size(80.dp)\r\n                    )\r\n                    Spacer(Modifier.height(8.dp))\r\n                    Text(\r\n                        text = if (grasp) \"Grasp\" else \"Release\",\r\n                        style = MaterialTheme.typography.headlineMedium,\r\n                        color = if (grasp) Color(0xFF34A853) else Color(0xFFEA4335),\r\n                        fontWeight = FontWeight.Bold\r\n                    )\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n"
+                    },
+                    {
+                        "path": "app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt",
+                        "fsPath": "app\\src\\main\\java\\com\\example\\gloveapp\\GloveApplication.kt"
+                    }
+                ]
+            },
+            "createdAt": 1750843847701,
+            "isInternal": false
+        }
+    ],
+    "isAgent": false,
+    "isNameGenerated": true,
+    "isCustomAgent": false,
+    "isUnitTestsAgent": false,
+    "isE2EAgent": false,
+    "autoApply": false
+}
+}

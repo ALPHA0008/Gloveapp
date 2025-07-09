@@ -1,0 +1,74 @@
+{
+    "checksum": "0487a960061eb9bd16191757a53deaea20803d05efed405200fe39b2bc47f9e7",
+    "data": {
+    "id": "52c42087-b59e-45b6-a9f8-06e2d05d4608",
+    "createdAt": 1750843760007,
+    "updatedAt": 1750843760861,
+    "title": "/unittests  Generate tests for onCreate method",
+    "messages": [
+        {
+            "id": "4c6d91ae-19cc-42a7-9ec5-f4aab3721a35",
+            "role": "user",
+            "content": [
+                {
+                    "type": "command",
+                    "commandName": "unittests"
+                },
+                {
+                    "type": "text",
+                    "text": " Generate tests for onCreate method"
+                }
+            ],
+            "createdAt": 1750843760021,
+            "isInternal": false,
+            "rawContent": {
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "command",
+                                "attrs": {
+                                    "label": "unittests"
+                                },
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "/unittests"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "text",
+                                "text": " Generate tests for onCreate method"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "157b271d-b29f-43b8-b60e-76263654ca2f",
+            "role": "system",
+            "content": [
+                {
+                    "type": "errorText",
+                    "text": "Rate limit exceeded. You can try again on June 26 at 11:52.",
+                    "allowRegenerate": true,
+                    "actions": [
+                        {
+                            "type": "upgradePlan",
+                            "waitSeconds": 75196
+                        }
+                    ]
+                }
+            ],
+            "createdAt": 1750843760860,
+            "isInternal": false
+        }
+    ],
+    "isAgent": false,
+    "isUnitTestsAgent": true
+}
+}

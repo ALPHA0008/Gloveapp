@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "444814217991",
+    "project_id": "gloveapp-6793a",
+    "storage_bucket": "gloveapp-6793a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444814217991:android:063fdb68b2fcb244a3aba2",
+        "android_client_info": {
+          "package_name": "com.example.gloveapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8H01Yot3OT7oKosm5XbJZ8110shNshvs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

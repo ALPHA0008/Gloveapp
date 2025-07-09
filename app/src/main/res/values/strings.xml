@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Glove App</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="default_notification_channel_id">default_channel</string>
+    <string name="default_notification_channel_name">General Notifications</string>
+    <string name="default_notification_title">New Message</string>
+    <string name="default_notification_body">You have a new message.</string>
+
+            <!-- ... other strings ... -->
+    <!-- <string name="default_notification_channel_id" translatable="false">default_channel</string> -->
+
+            <!-- ... other strings ... -->
+    <!-- <string name="default_notification_channel_id" translatable="false">default_channel</string> -->
+
+            <!-- ... other strings ... -->
+    <!-- <string name="default_notification_channel_id" translatable="false">default_channel</string> -->
+
+        <!-- ... other strings ... -->
+    <!-- <string name="default_notification_channel_id" translatable="false">default_channel</string> -->
+</resources>
+
