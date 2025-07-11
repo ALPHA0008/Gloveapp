@@ -29,9 +29,9 @@ data class FingerScore(
 )
 
 @Composable
-fun NeonCircularProgressIndicator(
+fun DynamicCircularProgressIndicator(
     progress: Float,
-    color: Color,
+    baseColor: Color,
     modifier: Modifier = Modifier,
     size: androidx.compose.ui.unit.Dp = 80.dp,
     strokeWidth: androidx.compose.ui.unit.Dp = 8.dp
@@ -39,72 +39,89 @@ fun NeonCircularProgressIndicator(
     val animatedProgress by androidx.compose.animation.core.animateFloatAsState(
         targetValue = progress,
         animationSpec = androidx.compose.animation.core.tween(
-            durationMillis = 1000,
+            durationMillis = 1500,
             easing = androidx.compose.animation.core.EaseOutCubic
         )
     )
+    
+    // Calculate dynamic color based on score (light to dark progression)
+    val dynamicColor = getDynamicColor(baseColor, progress)
     
     Box(
         modifier = modifier.size(size),
         contentAlignment = Alignment.Center
     ) {
         Canvas(
-            modifier = Modifier
-                .size(size)
-                .blur(4.dp)
-        ) {
-            drawNeonArc(
-                color = color,
-                progress = animatedProgress,
-                strokeWidth = strokeWidth.toPx() * 1.5f,
-                alpha = 0.6f
-            )
-        }
-        
-        Canvas(
             modifier = Modifier.size(size)
         ) {
-            drawNeonArc(
-                color = color,
+            drawHealthArc(
+                baseColor = baseColor,
+                dynamicColor = dynamicColor,
                 progress = animatedProgress,
-                strokeWidth = strokeWidth.toPx(),
-                alpha = 1f
+                strokeWidth = strokeWidth.toPx()
             )
         }
         
-        Text(
-            text = "${(animatedProgress * 100).toInt()}%",
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-            color = color.copy(alpha = 0.9f)
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "${(progress * 100).toInt()}%",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = dynamicColor
+            )
+            Text(
+                text = "Score",
+                fontSize = 8.sp,
+                color = dynamicColor.copy(alpha = 0.7f)
+            )
+        }
     }
 }
 
-private fun DrawScope.drawNeonArc(
-    color: Color,
+// Helper function to get dynamic color based on score
+fun getDynamicColor(baseColor: Color, progress: Float): Color {
+    // Progress ranges from 0 to 1
+    val intensity = progress.coerceIn(0f, 1f)
+    
+    // Create color progression from light to dark
+    val lightColor = baseColor.copy(alpha = 0.4f)
+    val darkColor = baseColor.copy(alpha = 1f)
+    
+    // Interpolate between light and dark based on score
+    return Color(
+        red = lightColor.red + (darkColor.red - lightColor.red) * intensity,
+        green = lightColor.green + (darkColor.green - lightColor.green) * intensity,
+        blue = lightColor.blue + (darkColor.blue - lightColor.blue) * intensity,
+        alpha = 0.7f + (0.3f * intensity) // Alpha from 0.7 to 1.0
+    )
+}
+
+private fun DrawScope.drawHealthArc(
+    baseColor: Color,
+    dynamicColor: Color,
     progress: Float,
-    strokeWidth: Float,
-    alpha: Float
+    strokeWidth: Float
 ) {
     val sweepAngle = 360f * progress
     val startAngle = -90f
     
-    // Background arc
+    // Background arc (light gray)
     drawArc(
-        color = color.copy(alpha = 0.2f * alpha),
+        color = baseColor.copy(alpha = 0.15f),
         startAngle = startAngle,
         sweepAngle = 360f,
         useCenter = false,
         style = Stroke(width = strokeWidth)
     )
     
-    // Progress arc with gradient
+    // Progress arc with smooth gradient
     val brush = Brush.sweepGradient(
         colors = listOf(
-            color.copy(alpha = 0.3f * alpha),
-            color.copy(alpha = 1f * alpha),
-            color.copy(alpha = 0.8f * alpha)
+            baseColor.copy(alpha = 0.5f),
+            dynamicColor,
+            baseColor.copy(alpha = 0.8f)
         ),
         center = center
     )
@@ -140,11 +157,11 @@ fun FingerHealthArcDisplay(
             fingerScores.forEachIndexed { index, fingerScore ->
                 // Create proper rainbow arc from left to right with better spacing
                 val angle = when(index) {
-                    0 -> 160f  // Thumb (far left)
-                    1 -> 130f  // Index
+                    0 -> 150f  // Thumb (far left)
+                    1 -> 120f  // Index
                     2 -> 90f   // Middle (top center)
-                    3 -> 50f   // Ring
-                    4 -> 20f   // Pinky (far right)
+                    3 -> 60f   // Ring
+                    4 -> 30f   // Pinky (far right)
                     else -> 90f
                 }
                 
@@ -162,9 +179,9 @@ fun FingerHealthArcDisplay(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        NeonCircularProgressIndicator(
+                        DynamicCircularProgressIndicator(
                             progress = fingerScore.score / 100f,
-                            color = fingerScore.color,
+                            baseColor = fingerScore.color,
                             size = 65.dp,
                             strokeWidth = 5.dp
                         )
@@ -184,35 +201,55 @@ fun FingerHealthArcDisplay(
 }
 
 private fun parseFingerScores(resultData: String): List<FingerScore> {
-    val neonColors = listOf(
-        Color(0xFFFF006E), // Neon Pink (Thumb)
-        Color(0xFFFF8500), // Neon Orange (Index)
-        Color(0xFFFFFF00), // Neon Yellow (Middle)
-        Color(0xFF00FF41), // Neon Green (Ring)
-        Color(0xFF0099FF)  // Neon Blue (Pinky)
+    // Natural rainbow colors - pleasant and professional
+    val rainbowColors = listOf(
+        Color(0xFFE91E63), // Pink/Rose (Thumb)
+        Color(0xFFFF9800), // Orange (Index)  
+        Color(0xFFFFC107), // Amber/Golden (Middle)
+        Color(0xFF4CAF50), // Green (Ring)
+        Color(0xFF2196F3)  // Blue (Pinky)
     )
     
     val fingerNames = listOf("Thumb", "Index", "Middle", "Ring", "Pinky")
     
     return try {
-        // Parse data - expecting format like "thumb:22.8\nindex:83.7\nmiddle:100\nring:100\npinky:100"
+        println("DEBUG: Raw result data: $resultData")
+        
+        // Parse the finger healthiness analysis format
         val scoreMap = mutableMapOf<String, Float>()
         
-        // Split by both newlines and commas to handle different formats
-        val entries = resultData.split("\n", ",")
+        // Split by lines and look for finger analysis lines
+        val lines = resultData.split("\n")
         
-        entries.forEach { entry ->
-            val parts = entry.trim().split(":")
-            if (parts.size == 2) {
-                val fingerKey = parts[0].trim().lowercase()
-                val score = parts[1].trim().toFloatOrNull()
-                if (score != null) {
-                    scoreMap[fingerKey] = score
+        lines.forEach { line ->
+            val trimmedLine = line.trim()
+            
+            // Look for lines that contain finger names and Score:
+            when {
+                trimmedLine.contains("Thumb") && trimmedLine.contains("Score:") -> {
+                    val score = extractScoreFromLine(trimmedLine)
+                    if (score != null) scoreMap["thumb"] = score
+                }
+                trimmedLine.contains("Index") && trimmedLine.contains("Score:") -> {
+                    val score = extractScoreFromLine(trimmedLine)
+                    if (score != null) scoreMap["index"] = score
+                }
+                trimmedLine.contains("Middle") && trimmedLine.contains("Score:") -> {
+                    val score = extractScoreFromLine(trimmedLine)
+                    if (score != null) scoreMap["middle"] = score
+                }
+                trimmedLine.contains("Ring") && trimmedLine.contains("Score:") -> {
+                    val score = extractScoreFromLine(trimmedLine)
+                    if (score != null) scoreMap["ring"] = score
+                }
+                trimmedLine.contains("Little") && trimmedLine.contains("Score:") -> {
+                    val score = extractScoreFromLine(trimmedLine)
+                    if (score != null) scoreMap["pinky"] = score // Map "Little" to "Pinky"
                 }
             }
         }
         
-        // Map to standard finger names and get scores
+        // Get the final scores in order
         val scores = listOf(
             scoreMap["thumb"] ?: 0f,
             scoreMap["index"] ?: 0f,
@@ -221,23 +258,49 @@ private fun parseFingerScores(resultData: String): List<FingerScore> {
             scoreMap["pinky"] ?: 0f
         )
         
+        println("DEBUG: Extracted scores - Thumb: ${scores[0]}, Index: ${scores[1]}, Middle: ${scores[2]}, Ring: ${scores[3]}, Pinky: ${scores[4]}")
+        
+        // If we have at least some valid scores, use them
         if (scores.any { it > 0 }) {
-            fingerNames.zip(scores.zip(neonColors)) { name, (score, color) ->
+            return fingerNames.zip(scores.zip(rainbowColors)) { name, (score, color) ->
                 FingerScore(name, score, color)
             }
         } else {
-            // Fallback with sample data for testing
-            val sampleScores = listOf(85f, 92f, 78f, 88f, 90f)
-            fingerNames.zip(sampleScores.zip(neonColors)) { name, (score, color) ->
+            println("DEBUG: No valid scores found, using sample data")
+            // Use sample data for testing
+            val sampleScores = listOf(72f, 85f, 91f, 78f, 88f)
+            return fingerNames.zip(sampleScores.zip(rainbowColors)) { name, (score, color) ->
                 FingerScore(name, score, color)
             }
         }
+        
     } catch (e: Exception) {
-        // Fallback with sample data for testing
-        val sampleScores = listOf(85f, 92f, 78f, 88f, 90f)
-        fingerNames.zip(sampleScores.zip(neonColors)) { name, (score, color) ->
+        println("DEBUG: Error parsing finger scores: ${e.message}")
+        // Use sample data for testing
+        val sampleScores = listOf(65f, 80f, 95f, 70f, 85f)
+        return fingerNames.zip(sampleScores.zip(rainbowColors)) { name, (score, color) ->
             FingerScore(name, score, color)
         }
+    }
+}
+
+// Helper function to extract score from a line like "Score: 100.0)"
+private fun extractScoreFromLine(line: String): Float? {
+    return try {
+        // Find "Score:" and extract the number after it
+        val scoreIndex = line.indexOf("Score:")
+        if (scoreIndex != -1) {
+            val scoreText = line.substring(scoreIndex + 6) // Skip "Score:"
+            // Extract the number (handle both "100.0)" and "100)" formats)
+            val numberText = scoreText.split(")")[0].trim()
+            val score = numberText.toFloatOrNull()
+            score?.coerceIn(0f, 100f)
+        } else {
+            null
+        }
+    } catch (e: Exception) {
+        println("DEBUG: Failed to extract score from line: $line, Error: ${e.message}")
+        null
     }
 }
 
@@ -314,6 +377,31 @@ fun ResultScreen(
                 // Parse and display finger scores
                 val fingerScores = remember(resultData) { parseFingerScores(resultData) }
                 
+                // Debug card to show raw data (you can remove this later)
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp, vertical = 8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(12.dp)
+                    ) {
+                        Text(
+                            text = "Raw Data (for debugging):",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = resultData,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -346,10 +434,11 @@ fun ResultScreen(
                         }
                         
                         val statusColor = when {
-                            averageScore >= 90 -> Color(0xFF00FF41) // Neon Green
-                            averageScore >= 80 -> Color(0xFFFFFF00) // Neon Yellow
-                            averageScore >= 70 -> Color(0xFFFF8500) // Neon Orange
-                            else -> Color(0xFFFF006E) // Neon Pink/Red
+                            averageScore >= 90 -> Color(0xFF4CAF50) // Green
+                            averageScore >= 80 -> Color(0xFF8BC34A) // Light Green
+                            averageScore >= 70 -> Color(0xFFFF9800) // Orange
+                            averageScore >= 60 -> Color(0xFFFF5722) // Deep Orange
+                            else -> Color(0xFFE91E63) // Pink/Red
                         }
                         
                         Card(
