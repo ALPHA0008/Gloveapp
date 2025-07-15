@@ -203,7 +203,7 @@ fun FingerHealthArcDisplay(
 private fun parseFingerScores(resultData: String): List<FingerScore> {
     // Natural rainbow colors - pleasant and professional
     val rainbowColors = listOf(
-        Color(0xFFE91E63), // Pink/Rose (Thumb)
+        Color(0xFFCC195E), // Pink/Rose (Thumb)
         Color(0xFFFF9800), // Orange (Index)  
         Color(0xFFFFC107), // Amber/Golden (Middle)
         Color(0xFF4CAF50), // Green (Ring)
@@ -358,49 +358,9 @@ fun ResultScreen(
                 verticalArrangement = Arrangement.Top
             ) {
                 Spacer(Modifier.height(16.dp))
-                Text(
-                    text = "Finger Health Analysis",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = "Overall Health Scores",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(Modifier.height(32.dp))
                 
                 // Parse and display finger scores
                 val fingerScores = remember(resultData) { parseFingerScores(resultData) }
-                
-                // Debug card to show raw data (you can remove this later)
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 4.dp, vertical = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(12.dp)
-                    ) {
-                        Text(
-                            text = "Raw Data (for debugging):",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = resultData,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
                 
                 Card(
                     modifier = Modifier

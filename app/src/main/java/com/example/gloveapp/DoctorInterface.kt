@@ -177,7 +177,7 @@ fun DoctorInterface(
                                     result = doc.getString("result"),
                                     requestedAt = doc.getTimestamp("requestedAt")
                                 )
-                            }
+                            }.sortedByDescending { it.requestedAt }
                         } else {
                             patientSessionResults = emptyList()
                         }
@@ -424,7 +424,7 @@ fun PatientsTab(
 @Composable
 fun PatientDetailsScreen(
     patient: AppUser,
-    sessions: List<Session>,
+    sessions: List<Session>, 
     patientSessionResults: List<PatientSessionResult>,
     onBack: () -> Unit
 ) {
@@ -433,6 +433,7 @@ fun PatientDetailsScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Show patient information
         Text(
             text = "Patient: ${patient.name ?: "Unknown"}",
             style = MaterialTheme.typography.headlineMedium,
@@ -444,63 +445,7 @@ fun PatientDetailsScreen(
             color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(Modifier.height(8.dp))
-        Text(
-            text = "Session History",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        if (sessions.isEmpty()) {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp), contentAlignment = Alignment.Center) {
-                Text(
-                    text = "No sessions recorded for this patient.",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        } else {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                items(sessions, key = { it.id }) { session ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        elevation = CardDefaults.cardElevation(2.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-                    ) {
-                        Column(Modifier.padding(16.dp)) {
-                            Text(
-                                text = "Session: ${session.timestamp}",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                text = "Duration: ${session.duration / 1000} seconds",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Text(
-                                text = "Grasp Data Points: ${session.graspData.size}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Text(
-                                text = "Release Data Points: ${session.releaseData.size}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-            }
-        }
-        Spacer(Modifier.height(16.dp))
+        // Only Session Results section retained
         Text(
             text = "Session Results",
             style = MaterialTheme.typography.titleMedium,
@@ -511,7 +456,7 @@ fun PatientDetailsScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp),
+                    .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
